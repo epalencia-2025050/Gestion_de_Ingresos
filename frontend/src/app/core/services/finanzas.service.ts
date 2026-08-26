@@ -27,10 +27,10 @@ export class FinanzasService {
     gastosPorCobrar: 0,
     totalIngresos: 0,
     totalGastos: 0,
-    porcentajeSaldoMes: 24,
-    porcentajeAhorroMes: 5.1,
+    porcentajeSaldoMes: 0,
+    porcentajeAhorroMes: 0,
     estadoCobrados: '-Estable',
-    estadoPorCobrar: 'requiere atencion',
+    estadoPorCobrar: 'al dia',
   });
 
   readonly categorias = signal<CategoriaGasto[]>([]);
