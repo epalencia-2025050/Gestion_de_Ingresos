@@ -132,15 +132,15 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   ) {
     // Efecto reactivo para actualizar los gráficos cuando los datos cambien
     effect(() => {
-      const cats = this.finanzasService.categorias();
-      if (this.donutCanvas && cats.length > 0) {
+      this.finanzasService.categorias();
+      if (this.donutCanvas) {
         this.updateDonutChart();
       }
     });
 
     effect(() => {
-      const trend = this.finanzasService.tendencia();
-      if (this.trendCanvas && trend.length > 0) {
+      this.finanzasService.tendencia();
+      if (this.trendCanvas) {
         this.updateTrendChart();
       }
     });
@@ -184,6 +184,28 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   // --- Gráfica Donut (Gastos por categorías) ---
+  private getDonutConfig(): { labels: string[]; data: number[]; backgroundColors: string[]; borderColors: string[] } {
+    const cats = this.finanzasService.categorias();
+    const hasData = cats.some((c) => c.total > 0);
+    const standardColors = ['#0b3d4a', '#f5a324', '#1ea6b6', '#ffffff'];
+
+    if (!hasData) {
+      return {
+        labels: ['Sin gastos registrados'],
+        data: [1],
+        backgroundColors: ['rgba(255, 255, 255, 0.08)'],
+        borderColors: ['rgba(255, 255, 255, 0.15)'],
+      };
+    }
+
+    return {
+      labels: cats.map((c) => c.categoria),
+      data: cats.map((c) => c.total),
+      backgroundColors: cats.map((_, i) => standardColors[i % standardColors.length]),
+      borderColors: cats.map(() => '#13626e'),
+    };
+  }
+
   private initDonutChart(): void {
     if (!this.donutCanvas) return;
     const ctx = this.donutCanvas.nativeElement.getContext('2d');
@@ -193,20 +215,17 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       this.donutChart.destroy();
     }
 
-    const cats = this.finanzasService.categorias();
-    const labels = cats.map((c) => c.categoria);
-    const data = cats.map((c) => c.total > 0 ? c.total : 0.0001); // Evitar donut vacío
-    const backgroundColors = ['#0b3d4a', '#f5a324', '#1ea6b6', '#ffffff'];
+    const config = this.getDonutConfig();
 
     this.donutChart = new Chart(ctx, {
       type: 'doughnut',
       data: {
-        labels: labels.length ? labels : ['Vivienda', 'Alimentación', 'Transporte', 'Otros'],
+        labels: config.labels,
         datasets: [
           {
-            data: data.length ? data : [40, 30, 20, 10],
-            backgroundColor: backgroundColors,
-            borderColor: '#13626e',
+            data: config.data,
+            backgroundColor: config.backgroundColors,
+            borderColor: config.borderColors,
             borderWidth: 3,
             hoverOffset: 6,
             borderRadius: 4,
@@ -229,6 +248,10 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
             cornerRadius: 8,
             callbacks: {
               label: (context) => {
+                const hasData = this.finanzasService.categorias().some((c) => c.total > 0);
+                if (!hasData) {
+                  return ' Sin gastos registrados: Q0.00';
+                }
                 const total = context.parsed;
                 return ` ${context.label}: Q${total.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
               },
@@ -245,9 +268,11 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       return;
     }
 
-    const cats = this.finanzasService.categorias();
-    this.donutChart.data.labels = cats.map((c) => c.categoria);
-    this.donutChart.data.datasets[0].data = cats.map((c) => c.total);
+    const config = this.getDonutConfig();
+    this.donutChart.data.labels = config.labels;
+    this.donutChart.data.datasets[0].data = config.data;
+    this.donutChart.data.datasets[0].backgroundColor = config.backgroundColors;
+    this.donutChart.data.datasets[0].borderColor = config.borderColors;
     this.donutChart.update();
   }
 
@@ -262,17 +287,19 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     const trend = this.finanzasService.tendencia();
-    const labels = trend.map((t) => t.mes);
-    const data = trend.map((t) => t.valorGrafica);
+    const labels = trend.length
+      ? trend.map((t) => t.mes)
+      : ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
+    const data = trend.length ? trend.map((t) => t.valorGrafica) : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
     this.trendChart = new Chart(ctx, {
       type: 'bar',
       data: {
-        labels: labels.length ? labels : ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'],
+        labels,
         datasets: [
           {
             label: 'Tendencia',
-            data: data.length ? data : [75, 60, 45, 30, 60, 45, 75, 60, 30, 60, 45, 45],
+            data,
             backgroundColor: '#dca044',
             hoverBackgroundColor: '#f5a324',
             borderRadius: {
@@ -367,8 +394,12 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     const trend = this.finanzasService.tendencia();
-    this.trendChart.data.labels = trend.map((t) => t.mes);
-    this.trendChart.data.datasets[0].data = trend.map((t) => t.valorGrafica);
+    this.trendChart.data.labels = trend.length
+      ? trend.map((t) => t.mes)
+      : ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
+    this.trendChart.data.datasets[0].data = trend.length
+      ? trend.map((t) => t.valorGrafica)
+      : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     this.trendChart.update();
   }
 
