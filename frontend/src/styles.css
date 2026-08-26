@@ -1,0 +1,65 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+  background-color: #124b60;
+  color: #ffffff;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* Custom scrollbar for dark teal UI */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(11, 67, 81, 0.5);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(26, 119, 132, 0.8);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #f5a324;
+}
+
+/* Paleta Oficial - Sistema de Gestión de Gastos */
+:root {
+  --color-primary: #0F2C4C;       /* Azul Marino */
+  --color-emerald: #1E8A5D;       /* Verde Esmeralda */
+  --color-teal: #17A398;          /* Verde Azulado */
+  --color-amber: #F5A623;         /* Ámbar */
+  --color-light-gray: #EEF1F4;    /* Gris Claro */
+  --color-charcoal: #2B2D33;      /* Carbón */
+}
+
+/* Efectos Glassmorphism basados en la imagen */
+.glass-card {
+  background: rgba(15, 44, 76, 0.45);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(238, 241, 244, 0.2);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+.input-glass {
+  background: rgba(43, 45, 51, 0.5);
+  border: 1px solid rgba(238, 241, 244, 0.25);
+  color: #EEF1F4;
+}
+
+.input-glass::placeholder {
+  color: rgba(238, 241, 244, 0.6);
+}
+
+.input-glass:focus {
+  border-color: #17A398;
+  outline: none;
+  box-shadow: 0 0 10px rgba(23, 163, 152, 0.4);
+}
