@@ -47,12 +47,6 @@ export class LoginComponent implements OnInit, AfterViewInit, OnDestroy {
   private animationFrameId!: number;
 
   private bgMaterial!: THREE.ShaderMaterial;
-  private sphereGroup!: THREE.Group;
-  private outerSphere!: THREE.Mesh;
-  private innerSphere!: THREE.Mesh;
-  
-  private velocity = { x: 0.006, y: 0.004 };
-  private bounds = { x: 2.2, y: 1.4 };
 
   // Shader para simular el pliegue y textura de la seda en movimiento
   private vertexShader = `
@@ -113,10 +107,15 @@ export class LoginComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    // Si authService tiene mensaje de expiración de sesión previo
+    if (this.authService.sessionExpiredMessage()) {
+      this.sessionExpiredMessage.set(this.authService.sessionExpiredMessage());
+    }
+
     // Escuchar parámetros dinámicamente y limpiar la URL al detectar la flag
     this.route.queryParams.subscribe(params => {
       if (params['sessionExpired'] === 'true') {
-        this.sessionExpiredMessage.set('Tu sesión expiró. Por favor inicia sesión de nuevo.');
+        this.sessionExpiredMessage.set('Tu sesión ha expirado. Por favor, inicia sesión de nuevo.');
 
         // Remover el queryParam de la URL para evitar que persista en refrescos/recargas
         this.router.navigate([], {
@@ -163,36 +162,6 @@ export class LoginComponent implements OnInit, AfterViewInit, OnDestroy {
     bgMesh.position.z = -4;
     this.scene.add(bgMesh);
 
-    // Esfera 3D
-    this.sphereGroup = new THREE.Group();
-
-    const outerGeo = new THREE.IcosahedronGeometry(0.9, 3);
-    const outerMat = new THREE.MeshBasicMaterial({
-      color: 0xEEF1F4,
-      wireframe: true,
-      transparent: true,
-      opacity: 0.35
-    });
-    this.outerSphere = new THREE.Mesh(outerGeo, outerMat);
-    this.sphereGroup.add(this.outerSphere);
-
-    const innerGeo = new THREE.IcosahedronGeometry(0.5, 2);
-    const innerMat = new THREE.MeshBasicMaterial({
-      color: 0x17A398,
-      transparent: true,
-      opacity: 0.7
-    });
-    this.innerSphere = new THREE.Mesh(innerGeo, innerMat);
-    this.sphereGroup.add(this.innerSphere);
-
-    const glowGeo = new THREE.SphereGeometry(0.06, 16, 16);
-    const glowMat = new THREE.MeshBasicMaterial({ color: 0xF5A623 });
-    const glowPoint = new THREE.Mesh(glowGeo, glowMat);
-    glowPoint.position.set(0.35, 0.2, 0.5);
-    this.sphereGroup.add(glowPoint);
-
-    this.scene.add(this.sphereGroup);
-
     window.addEventListener('resize', this.onWindowResize);
     this.animate();
   }
@@ -213,29 +182,6 @@ export class LoginComponent implements OnInit, AfterViewInit, OnDestroy {
       this.bgMaterial.uniforms['uTime'].value += 0.025;
     }
 
-    if (this.outerSphere) {
-      this.outerSphere.rotation.y += 0.005;
-      this.outerSphere.rotation.x += 0.003;
-    }
-    if (this.innerSphere) {
-      this.innerSphere.rotation.y -= 0.006;
-    }
-
-    if (this.sphereGroup) {
-      this.sphereGroup.position.x += this.velocity.x;
-      this.sphereGroup.position.y += this.velocity.y;
-
-      const aspect = this.camera.aspect;
-      const boundX = this.bounds.y * aspect;
-
-      if (this.sphereGroup.position.x > boundX || this.sphereGroup.position.x < -boundX) {
-        this.velocity.x *= -1;
-      }
-      if (this.sphereGroup.position.y > this.bounds.y || this.sphereGroup.position.y < -this.bounds.y) {
-        this.velocity.y *= -1;
-      }
-    }
-
     this.renderer.render(this.scene, this.camera);
   };
 
@@ -254,6 +200,8 @@ export class LoginComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.loading.set(true);
     this.errorMessage.set(null);
+    this.sessionExpiredMessage.set(null);
+    this.authService.sessionExpiredMessage.set(null);
 
     const { email, password } = this.form.getRawValue();
 
