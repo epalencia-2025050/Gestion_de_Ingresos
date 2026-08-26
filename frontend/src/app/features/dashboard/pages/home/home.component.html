@@ -1,0 +1,950 @@
+<div class="min-h-screen w-full bg-[#124b60] text-white flex flex-col lg:flex-row font-display relative overflow-x-hidden">
+
+  <!-- ======================================================== -->
+  <!-- SIDEBAR (IZQUIERDA) -->
+  <!-- ======================================================== -->
+  <aside 
+    class="w-full lg:w-[280px] xl:w-[300px] shrink-0 bg-[#124b60] border-b lg:border-b-0 lg:border-r border-[#1a8881]/30 flex flex-col justify-between p-6 z-40 transition-all duration-300"
+    [class.hidden]="!mobileSidebarOpen()"
+    [class.lg:flex]="true"
+  >
+    <!-- Top Branding & Navigation -->
+    <div class="flex flex-col gap-8">
+      
+      <!-- LOGO + TITULO -->
+      <div class="flex items-center gap-3.5 pt-2">
+        <div class="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 shadow-lg overflow-hidden">
+          <img 
+            src="assets/branding/logo.png" 
+            alt="Logo Gestión de Ingresos" 
+            class="w-full h-full object-cover"
+          />
+        </div>
+        <div class="flex flex-col">
+          <span class="text-2xl font-bold tracking-tight text-white leading-none">Gestion de</span>
+          <span class="text-2xl font-bold tracking-tight text-white leading-tight">ingresos</span>
+        </div>
+      </div>
+
+      <!-- BOTONES DEL MENU -->
+      <nav class="flex flex-col gap-3.5 mt-2">
+
+        <!-- 1. Menu (Dashboard Home) -->
+        <div class="flex items-center gap-3 group cursor-pointer" (click)="setView('dashboard')">
+          <div class="w-10 h-10 flex items-center justify-center shrink-0 bg-[#f2a625] rounded-xl shadow-md">
+            <svg class="w-5 h-5 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+          </div>
+          <div 
+            class="flex-1 h-10 rounded-full flex items-center justify-between pl-4 pr-0 transition-all shadow-md overflow-hidden bg-gradient-to-r from-[#1a8881] to-[#285e6d] hover:brightness-110"
+            [ngClass]="activeView() === 'dashboard' ? 'ring-2 ring-white/50' : ''"
+          >
+            <span class="text-sm font-medium text-white tracking-wide">Menu</span>
+            <span class="w-3.5 h-full bg-[#f2a625] rounded-r-full shrink-0"></span>
+          </div>
+        </div>
+
+        <!-- 2. Ingresar los ingresos -->
+        <div class="flex items-center gap-3 group cursor-pointer" (click)="openAddIncomeModal()">
+          <div class="w-10 h-10 flex items-center justify-center shrink-0 bg-[#f2a625] rounded-xl shadow-md">
+            <svg class="w-5 h-5 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>
+            </svg>
+          </div>
+          <div class="flex-1 h-10 bg-gradient-to-r from-[#1a8881] to-[#285e6d] hover:brightness-110 rounded-full flex items-center justify-between pl-4 pr-0 transition-all shadow-md overflow-hidden">
+            <span class="text-xs sm:text-sm font-medium text-white tracking-wide truncate pr-1">ingresar los ingresos</span>
+            <span class="w-3.5 h-full bg-[#f2a625] rounded-r-full shrink-0"></span>
+          </div>
+        </div>
+
+        <!-- 3. Agregar gasto -->
+        <div class="flex items-center gap-3 group cursor-pointer" (click)="openAddExpenseModal()">
+          <div class="w-10 h-10 flex items-center justify-center shrink-0 bg-[#f2a625] rounded-xl shadow-md">
+            <svg class="w-5 h-5 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+          </div>
+          <div class="flex-1 h-10 bg-gradient-to-r from-[#1a8881] to-[#285e6d] hover:brightness-110 rounded-full flex items-center justify-between pl-4 pr-0 transition-all shadow-md overflow-hidden">
+            <span class="text-sm font-medium text-white tracking-wide">Agregar gasto</span>
+            <span class="w-3.5 h-full bg-[#f2a625] rounded-r-full shrink-0"></span>
+          </div>
+        </div>
+
+        <!-- 4. Historial de gastos -->
+        <div class="flex items-center gap-3 group cursor-pointer" (click)="setView('history')">
+          <div class="w-10 h-10 flex items-center justify-center shrink-0 bg-[#f2a625] rounded-xl shadow-md">
+            <svg class="w-5 h-5 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+          </div>
+          <div 
+            class="flex-1 h-10 rounded-full flex items-center justify-between pl-4 pr-0 transition-all shadow-md overflow-hidden bg-gradient-to-r from-[#1a8881] to-[#285e6d] hover:brightness-110"
+            [ngClass]="activeView() === 'history' ? 'ring-2 ring-white/50' : ''"
+          >
+            <span class="text-sm font-medium text-white tracking-wide">Historial de gastos</span>
+            <span class="w-3.5 h-full bg-[#f2a625] rounded-r-full shrink-0"></span>
+          </div>
+        </div>
+
+        <!-- 5. Reportes -->
+        <div class="flex items-center gap-3 group cursor-pointer" (click)="setView('reports')">
+          <div class="w-10 h-10 flex items-center justify-center shrink-0 bg-[#f2a625] rounded-xl shadow-md">
+            <svg class="w-5 h-5 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+            </svg>
+          </div>
+          <div 
+            class="flex-1 h-10 rounded-full flex items-center justify-between pl-4 pr-0 transition-all shadow-md overflow-hidden bg-gradient-to-r from-[#1a8881] to-[#285e6d] hover:brightness-110"
+            [ngClass]="activeView() === 'reports' ? 'ring-2 ring-white/50' : ''"
+          >
+            <span class="text-sm font-medium text-white tracking-wide">Reportes</span>
+            <span class="w-3.5 h-full bg-[#f2a625] rounded-r-full shrink-0"></span>
+          </div>
+        </div>
+
+        <!-- 6. Configuracion -->
+        <div class="flex items-center gap-3 group cursor-pointer" (click)="setView('config')">
+          <div class="w-10 h-10 flex items-center justify-center shrink-0 bg-[#f2a625] rounded-xl shadow-md">
+            <svg class="w-5 h-5 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+            </svg>
+          </div>
+          <div 
+            class="flex-1 h-10 rounded-full flex items-center justify-between pl-4 pr-0 transition-all shadow-md overflow-hidden bg-gradient-to-r from-[#1a8881] to-[#285e6d] hover:brightness-110"
+            [ngClass]="activeView() === 'config' ? 'ring-2 ring-white/50' : ''"
+          >
+            <span class="text-sm font-medium text-white tracking-wide">Configuracion</span>
+            <span class="w-3.5 h-full bg-[#f2a625] rounded-r-full shrink-0"></span>
+          </div>
+        </div>
+
+      </nav>
+    </div>
+
+    <!-- BOTON CERRAR SESION - ancho reducido y centrado -->
+    <div class="pt-8 lg:pt-12 flex justify-center">
+      <button 
+        (click)="onLogout()"
+        class="w-[205px] h-10 bg-[#1a8881] rounded-full flex items-center pl-2.5 pr-0 shadow-lg shadow-black/20 transition-all active:scale-[0.98] group overflow-hidden"
+      >
+        <div class="flex-1 h-full bg-[#f2a625] hover:bg-[#e0951b] rounded-full flex items-center justify-between px-4 transition-colors">
+          <span class="text-xs sm:text-sm font-normal text-white tracking-wide">Cerrar sesion</span>
+          <svg class="w-4 h-4 text-[#2b2d33] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+          </svg>
+        </div>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ======================================================== -->
+  <!-- CONTENIDO PRINCIPAL (DERECHA) -->
+  <!-- ======================================================== -->
+  <main class="flex-1 flex flex-col min-w-0 p-5 sm:p-7 lg:p-10 max-w-[1600px] mx-auto w-full">
+
+    <!-- TOP BAR: barra de busqueda a la izquierda, campana y avatar mas grandes a la derecha -->
+    <header class="w-full flex items-center justify-between gap-4 mb-6 relative">
+      
+      <!-- Mobile hamburger toggle -->
+      <button 
+        (click)="toggleMobileSidebar()" 
+        class="lg:hidden p-2 rounded-xl bg-[#1a8881] text-white hover:bg-[#285e6d] transition-colors"
+      >
+        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+      </button>
+
+      <!-- BUSCADOR NARANJA CON PESTAÑA TEAL A LA IZQUIERDA -->
+      <div class="relative flex items-center">
+        <div class="h-10 bg-[#1a8881] rounded-full pl-2.5 pr-0 flex items-center shadow-md">
+          <div class="h-full w-44 sm:w-56 md:w-72 bg-[#f2a625] rounded-full flex items-center px-4 text-[#2b2d33] transition-all focus-within:ring-2 focus-within:ring-white/40">
+            <svg class="w-4 h-4 text-[#2b2d33] shrink-0 mr-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+            </svg>
+            <input 
+              type="text" 
+              placeholder="Search" 
+              [value]="searchControl()"
+              (input)="onSearch($event)"
+              class="w-full bg-transparent border-none text-sm font-normal text-[#2b2d33] placeholder-[#2b2d33]/80 focus:outline-none"
+            />
+            @if (searchControl()) {
+              <button (click)="searchControl.set(''); showSearchDropdown.set(false)" class="text-xs text-[#2b2d33]/80 hover:text-black ml-1 font-bold">✕</button>
+            }
+          </div>
+        </div>
+
+        <!-- DROPDOWN DE RESULTADOS EN TIEMPO REAL -->
+        @if (showSearchDropdown() && searchControl().trim().length > 0) {
+          <div class="absolute top-12 left-0 w-80 sm:w-96 bg-[#124b60] border border-white/20 rounded-2xl shadow-2xl p-3 z-50 animate-fade-in max-h-80 overflow-y-auto">
+            <div class="text-[11px] font-semibold text-[#95b5bc] px-2 py-1 uppercase tracking-wider border-b border-white/10 mb-1">
+              Resultados de búsqueda ({{ filteredTransactions().length }})
+            </div>
+            @for (item of filteredTransactions().slice(0, 6); track item.id) {
+              <div 
+                (click)="selectSearchResult(item)" 
+                class="p-2.5 rounded-xl hover:bg-white/10 cursor-pointer transition-colors flex items-center justify-between gap-2"
+              >
+                <div class="flex flex-col min-w-0">
+                  <span class="text-xs font-bold text-white truncate">{{ item.descripcion }}</span>
+                  <span class="text-[10px] text-[#95b5bc]">{{ item.categoria }} • {{ item.fecha }}</span>
+                </div>
+                <div class="text-right shrink-0">
+                  <span 
+                    class="text-xs font-extrabold"
+                    [class.text-[#28bed0]]="item.transactionType === 'ingreso'"
+                    [class.text-[#f2a625]]="item.transactionType === 'gasto'"
+                  >
+                    {{ item.transactionType === 'ingreso' ? '+' : '-' }}{{ formatMoney(item.monto) }}
+                  </span>
+                </div>
+              </div>
+            } @empty {
+              <div class="p-4 text-center text-xs text-[#95b5bc]">
+                No se encontraron coincidencias para "{{ searchControl() }}"
+              </div>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- CAMPANA + AVATAR (DERECHA - TAMAÑO MÁS GRANDE) -->
+      <div class="flex items-center gap-5 sm:gap-6 ml-auto relative">
+
+        <!-- BOTON CAMPANA NOTIFICACIONES (MÁS GRANDE CON BADGE CIRCULAR NARANJA) -->
+        <div class="relative flex items-center justify-center">
+          <button 
+            (click)="toggleNotifications()"
+            class="w-12 h-12 rounded-full flex items-center justify-center text-white hover:bg-white/10 transition-colors relative"
+            title="Notificaciones en tiempo real"
+          >
+            <svg class="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+            </svg>
+            @if (unreadNotificationsCount() > 0) {
+              <span class="absolute top-0 right-0 min-w-[22px] h-[22px] px-1 rounded-full bg-[#f2a625] text-black font-extrabold text-xs flex items-center justify-center shadow-md">
+                {{ unreadNotificationsCount() }}
+              </span>
+            }
+          </button>
+
+          <!-- DROPDOWN DE NOTIFICACIONES -->
+          @if (showNotifications()) {
+            <div class="absolute right-0 top-14 w-80 sm:w-96 bg-[#124b60] border border-white/20 rounded-2xl shadow-2xl p-4 z-50 animate-fade-in max-h-96 flex flex-col">
+              <div class="flex items-center justify-between pb-3 border-b border-white/10 mb-2">
+                <span class="text-xs font-bold text-white uppercase tracking-wider">Notificaciones Recientes</span>
+                <button (click)="clearAllNotifications()" class="text-[10px] text-[#f2a625] hover:underline">
+                  Limpiar
+                </button>
+              </div>
+
+              <div class="overflow-y-auto flex-1 flex flex-col gap-2">
+                @for (notif of finanzasService.notifications(); track notif.id) {
+                  <div class="p-2.5 rounded-xl bg-white/5 border border-white/5 flex items-start gap-2.5">
+                    <span 
+                      class="w-2 h-2 rounded-full mt-1.5 shrink-0"
+                      [class.bg-[#28bed0]]="notif.tipo === 'ingreso'"
+                      [class.bg-[#f2a625]]="notif.tipo === 'gasto'"
+                      [class.bg-white]="notif.tipo === 'sistema'"
+                    ></span>
+                    <div class="flex-1 min-w-0">
+                      <p class="text-xs text-white leading-tight font-medium">{{ notif.mensaje }}</p>
+                      @if (notif.monto) {
+                        <p class="text-[11px] font-bold text-[#f2a625] mt-0.5">
+                          {{ formatMoney(notif.monto) }}
+                        </p>
+                      }
+                      <span class="text-[9px] text-[#95b5bc] mt-1 block">
+                        {{ notif.fecha | date:'shortTime' }}
+                      </span>
+                    </div>
+                  </div>
+                } @empty {
+                  <div class="py-6 text-center text-xs text-[#95b5bc]">
+                    No tienes notificaciones pendientes.
+                  </div>
+                }
+              </div>
+            </div>
+          }
+        </div>
+
+        <!-- AVATAR CIRCULAR (MÁS GRANDE CON BORDE TEAL #38ada9) -->
+        <div 
+          (click)="openAvatarModal()"
+          class="w-14 h-14 sm:w-16 sm:h-16 rounded-full border-[3px] border-[#3eb5a4] overflow-hidden shadow-lg shrink-0 bg-[#1a8881] flex items-center justify-center text-white font-bold text-base cursor-pointer hover:scale-105 transition-all relative group"
+          title="Click para cambiar foto de perfil"
+        >
+          <img 
+            [src]="finanzasService.userAvatar()" 
+            alt="Avatar" 
+            class="w-full h-full object-cover"
+          />
+        </div>
+
+      </div>
+    </header>
+
+    <!-- ======================================================== -->
+    <!-- VISTA: DASHBOARD PRINCIPAL -->
+    <!-- ======================================================== -->
+    @if (activeView() === 'dashboard') {
+
+      <!-- TITULO PRINCIPAL -->
+      <div class="mb-6">
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Resumen Financiero</h1>
+        <p class="text-xs sm:text-sm text-[#95b5bc] font-normal mt-0.5">Vista general de su estado de ingresos</p>
+      </div>
+
+      <!-- 4 TARJETAS PRINCIPALES (GRADIENTE A1: #1a8881 A #285e6d) -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 mb-6">
+        
+        <!-- TARJETA 1: SALDO TOTAL -->
+        <div class="bg-gradient-to-r from-[#1a8881] to-[#285e6d] rounded-2xl p-5 shadow-lg shadow-black/15 border border-white/5 flex flex-col justify-between min-h-[140px] hover:translate-y-[-2px] transition-transform">
+          <div>
+            <span class="text-xs text-[#95b5bc] font-medium tracking-wide">Saldo total</span>
+            <div class="text-2xl xl:text-3xl font-extrabold text-white tracking-tight mt-1 truncate">
+              {{ formatMoney(finanzasService.resumen().saldoTotal) }}
+            </div>
+          </div>
+          <div class="text-[11px] text-[#95b5bc] mt-3 flex items-center gap-1 font-medium">
+            <span>{{ finanzasService.resumen().porcentajeSaldoMes > 0 ? ('+' + finanzasService.resumen().porcentajeSaldoMes + '% este mes') : '0% este mes' }}</span>
+          </div>
+        </div>
+
+        <!-- TARJETA 2: AHORRO ACUMULADO -->
+        <div class="bg-gradient-to-r from-[#1a8881] to-[#285e6d] rounded-2xl p-5 shadow-lg shadow-black/15 border border-white/5 flex flex-col justify-between min-h-[140px] hover:translate-y-[-2px] transition-transform">
+          <div>
+            <span class="text-xs text-[#95b5bc] font-medium tracking-wide">Ahorro acumulado</span>
+            <div class="text-2xl xl:text-3xl font-extrabold text-white tracking-tight mt-1 truncate">
+              {{ formatMoney(finanzasService.resumen().ahorroAcumulado) }}
+            </div>
+          </div>
+          <div class="text-[11px] text-[#95b5bc] mt-3 flex items-center gap-1 font-medium">
+            <span>{{ finanzasService.resumen().porcentajeAhorroMes > 0 ? ('+' + finanzasService.resumen().porcentajeAhorroMes + '% este mes') : '0% este mes' }}</span>
+          </div>
+        </div>
+
+        <!-- TARJETA 3: GASTOS COBRADOS -->
+        <div class="bg-gradient-to-r from-[#1a8881] to-[#285e6d] rounded-2xl p-5 shadow-lg shadow-black/15 border border-white/5 flex flex-col justify-between min-h-[140px] hover:translate-y-[-2px] transition-transform">
+          <div>
+            <span class="text-xs text-[#95b5bc] font-medium tracking-wide">Gastos cobrados</span>
+            <div class="text-2xl xl:text-3xl font-extrabold text-white tracking-tight mt-1 truncate">
+              {{ formatMoney(finanzasService.resumen().gastosCobrados) }}
+            </div>
+          </div>
+          <div class="text-[11px] text-[#95b5bc] mt-3 flex items-center gap-1 font-medium">
+            <span>{{ finanzasService.resumen().estadoCobrados }}</span>
+          </div>
+        </div>
+
+        <!-- TARJETA 4: GASTOS POR COBRAR -->
+        <div class="bg-gradient-to-r from-[#1a8881] to-[#285e6d] rounded-2xl p-5 shadow-lg shadow-black/15 border border-white/5 flex flex-col justify-between min-h-[140px] hover:translate-y-[-2px] transition-transform">
+          <div>
+            <span class="text-xs text-[#95b5bc] font-medium tracking-wide">Gastos por cobrar</span>
+            <div class="text-2xl xl:text-3xl font-extrabold text-white tracking-tight mt-1 truncate">
+              {{ formatMoney(finanzasService.resumen().gastosPorCobrar) }}
+            </div>
+          </div>
+          <div class="text-[11px] text-[#95b5bc] mt-3 flex items-center gap-1 font-medium">
+            <span>{{ finanzasService.resumen().estadoPorCobrar }}</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- SECCION DE GRAFICAS: DONUT + TENDENCIA DE BARRAS -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 mb-6">
+
+        <!-- GRAFICA DONUT: GASTOS POR CATEGORIAS (5 COLS - GRADIENTE A1) -->
+        <div class="lg:col-span-5 bg-gradient-to-r from-[#1a8881] to-[#285e6d] rounded-2xl p-6 shadow-lg shadow-black/15 border border-white/5 flex flex-col justify-between min-h-[380px]">
+          
+          <h2 class="text-lg sm:text-xl font-bold text-white tracking-tight mb-2">Gastos por categorias</h2>
+
+          <div class="relative w-full h-[210px] flex items-center justify-center my-auto">
+            <canvas #donutCanvas class="max-h-full max-w-full"></canvas>
+          </div>
+
+          <!-- LEYENDA IDÉNTICA AL DISEÑO -->
+          <div class="flex flex-col gap-1.5 mt-2 pl-2">
+            <div class="flex items-center gap-2.5">
+              <span class="w-2.5 h-2.5 rounded-full bg-[#0b3d4a] shrink-0"></span>
+              <span class="text-xs font-medium text-white">Vivienda</span>
+            </div>
+
+            <div class="flex items-center gap-2.5">
+              <span class="w-2.5 h-2.5 rounded-full bg-[#f2a625] shrink-0"></span>
+              <span class="text-xs font-medium text-white">alimentacion</span>
+            </div>
+
+            <div class="flex items-center gap-2.5">
+              <span class="w-2.5 h-2.5 rounded-full bg-[#1ea6b6] shrink-0"></span>
+              <span class="text-xs font-medium text-white">transporte</span>
+            </div>
+
+            <div class="flex items-center gap-2.5">
+              <span class="w-2.5 h-2.5 rounded-full bg-[#ffffff] shrink-0"></span>
+              <span class="text-xs font-medium text-white">otros</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- GRAFICA DE BARRAS: TENDENCIA DE AHORRO VS GASTO (7 COLS - GRADIENTE A1) -->
+        <div class="lg:col-span-7 bg-gradient-to-r from-[#1a8881] to-[#285e6d] rounded-2xl p-6 shadow-lg shadow-black/15 border border-white/5 flex flex-col justify-between min-h-[380px] relative">
+          
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-lg sm:text-xl font-bold text-white tracking-tight">Tendencia de ahorro vs gasto</h2>
+            <span class="text-xs text-[#95b5bc] font-normal">Ultimos 6 meses</span>
+          </div>
+
+          <div class="relative w-full h-[250px] flex-1">
+            <canvas #trendCanvas class="w-full h-full"></canvas>
+          </div>
+
+          <div class="flex justify-end pt-2">
+            <button 
+              (click)="openAddExpenseModal()" 
+              title="Agregar movimiento rápido"
+              class="text-2xl text-white/80 hover:text-white transition-colors leading-none font-light p-1"
+            >
+              +
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+
+    }
+
+    <!-- ======================================================== -->
+    <!-- VISTA: HISTORIAL COMPLETO DE GASTOS E INGRESOS -->
+    <!-- ======================================================== -->
+    @if (activeView() === 'history') {
+      <div class="bg-gradient-to-r from-[#1a8881] to-[#285e6d] rounded-2xl p-6 shadow-lg shadow-black/15 border border-white/5 flex flex-col gap-6">
+        
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/10">
+          <div>
+            <h2 class="text-2xl font-bold text-white tracking-tight">Historial de Transacciones</h2>
+            <p class="text-xs text-[#95b5bc] mt-0.5">Gestione, filtre, edite y elimine todos sus ingresos y gastos</p>
+          </div>
+          
+          <div class="flex flex-wrap items-center gap-2">
+            <select 
+              [value]="historyFilter()" 
+              (change)="historyFilter.set($any($event.target).value)"
+              class="bg-[#124b60] border border-white/10 text-xs text-white rounded-xl px-3 py-2 focus:outline-none focus:ring-1 focus:ring-[#f2a625]"
+            >
+              <option value="all">Todos los Tipos</option>
+              <option value="ingreso">Solo Ingresos</option>
+              <option value="gasto">Solo Gastos</option>
+            </select>
+
+            <select 
+              [value]="historyCategoryFilter()" 
+              (change)="historyCategoryFilter.set($any($event.target).value)"
+              class="bg-[#124b60] border border-white/10 text-xs text-white rounded-xl px-3 py-2 focus:outline-none focus:ring-1 focus:ring-[#f2a625]"
+            >
+              <option value="all">Todas las Categorías</option>
+              <option value="vivienda">Vivienda</option>
+              <option value="alimentación">Alimentación</option>
+              <option value="transporte">Transporte</option>
+              <option value="otros">Otros</option>
+              <option value="salario">Salario</option>
+            </select>
+
+            <button (click)="openAddIncomeModal()" class="px-4 py-2 rounded-full bg-[#1ea6b6] hover:bg-[#28bed0] text-xs font-semibold text-white transition-all shadow-md">
+              + Nuevo Ingreso
+            </button>
+            <button (click)="openAddExpenseModal()" class="px-4 py-2 rounded-full bg-[#f2a625] hover:bg-[#e0951b] text-xs font-semibold text-white transition-all shadow-md">
+              + Nuevo Gasto
+            </button>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead>
+              <tr class="text-[#95b5bc] border-b border-white/10 uppercase tracking-wider font-semibold">
+                <th class="pb-3 pl-3">ID</th>
+                <th class="pb-3">Descripción</th>
+                <th class="pb-3">Tipo</th>
+                <th class="pb-3">Categoría</th>
+                <th class="pb-3">Fecha</th>
+                <th class="pb-3">Estado</th>
+                <th class="pb-3 text-right pr-3">Monto</th>
+                <th class="pb-3 text-center">Acciones</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-white/5">
+              @for (item of filteredTransactions(); track item.id) {
+                <tr class="hover:bg-white/5 transition-colors">
+                  <td class="py-3.5 pl-3 text-[#95b5bc]">#{{ item.id }}</td>
+                  <td class="py-3.5 font-semibold text-white">{{ item.descripcion }}</td>
+                  <td class="py-3.5">
+                    <span 
+                      class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider"
+                      [ngClass]="item.transactionType === 'ingreso' ? 'bg-[#1ea6b6]/20 text-[#28bed0]' : 'bg-[#f2a625]/20 text-[#f2a625]'"
+                    >
+                      {{ item.transactionType }}
+                    </span>
+                  </td>
+                  <td class="py-3.5 text-[#95b5bc] font-medium">{{ item.categoria }}</td>
+                  <td class="py-3.5 text-[#95b5bc]">{{ item.fecha }}</td>
+                  <td class="py-3.5">
+                    <span 
+                      class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider"
+                      [ngClass]="(item.estado === 'pagado' || item.estado === 'completado') ? 'bg-emerald-500/20 text-emerald-300' : 'bg-amber-500/20 text-amber-300'"
+                    >
+                      {{ item.estado }}
+                    </span>
+                  </td>
+                  <td 
+                    class="py-3.5 text-right pr-3 font-extrabold text-sm"
+                    [ngClass]="item.transactionType === 'ingreso' ? 'text-[#28bed0]' : 'text-[#f2a625]'"
+                  >
+                    {{ item.transactionType === 'ingreso' ? '+' : '-' }}{{ formatMoney(item.monto) }}
+                  </td>
+                  <td class="py-3.5 text-center">
+                    <div class="flex items-center justify-center gap-2">
+                      <button (click)="openEditModal(item)" title="Editar registro" class="p-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                      </button>
+                      <button (click)="confirmDelete(item)" title="Eliminar registro" class="p-1.5 rounded-lg bg-red-500/20 hover:bg-red-500/40 text-red-300 transition-colors">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              } @empty {
+                <tr>
+                  <td colspan="8" class="py-12 text-center text-[#95b5bc]">
+                    No se encontraron registros con los filtros seleccionados.
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    }
+
+    <!-- ======================================================== -->
+    <!-- VISTA: REPORTES -->
+    <!-- ======================================================== -->
+    @if (activeView() === 'reports') {
+      <div class="bg-gradient-to-r from-[#1a8881] to-[#285e6d] rounded-2xl p-6 sm:p-8 shadow-lg shadow-black/15 border border-white/5 flex flex-col gap-6">
+        <div>
+          <h2 class="text-2xl font-bold text-white tracking-tight">Reportes Financieros</h2>
+          <p class="text-xs text-[#95b5bc] mt-0.5">Métricas consolidadas de rendimiento, ahorro y gastos</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <div class="bg-[#124b60] rounded-2xl p-5 border border-white/5">
+            <span class="text-xs text-[#95b5bc] font-semibold uppercase">Total Ingresos Históricos</span>
+            <div class="text-2xl font-extrabold text-[#28bed0] mt-2">
+              {{ formatMoney(finanzasService.resumen().totalIngresos) }}
+            </div>
+            <span class="text-[11px] text-[#95b5bc] mt-1 block">100% de ingresos registrados</span>
+          </div>
+
+          <div class="bg-[#124b60] rounded-2xl p-5 border border-white/5">
+            <span class="text-xs text-[#95b5bc] font-semibold uppercase">Total Gastos Históricos</span>
+            <div class="text-2xl font-extrabold text-[#f2a625] mt-2">
+              {{ formatMoney(finanzasService.resumen().totalGastos) }}
+            </div>
+            <span class="text-[11px] text-[#95b5bc] mt-1 block">Gastos totales ejecutados y pendientes</span>
+          </div>
+
+          <div class="bg-[#124b60] rounded-2xl p-5 border border-white/5">
+            <span class="text-xs text-[#95b5bc] font-semibold uppercase">Tasa de Ahorro Neta</span>
+            <div class="text-2xl font-extrabold text-emerald-400 mt-2">
+              {{ finanzasService.resumen().totalIngresos > 0 ? ((finanzasService.resumen().saldoTotal / finanzasService.resumen().totalIngresos) * 100).toFixed(1) : '0' }}%
+            </div>
+            <span class="text-[11px] text-[#95b5bc] mt-1 block">Margen de retención de capital</span>
+          </div>
+        </div>
+
+        <div class="bg-[#124b60] rounded-2xl p-5 border border-white/5">
+          <h3 class="text-base font-bold text-white mb-4">Desglose Detallado por Categorías</h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+            @for (cat of finanzasService.categorias(); track cat.categoria) {
+              <div class="p-4 rounded-xl bg-[#1a8881]/40 border border-white/5 flex flex-col justify-between">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold text-white">{{ cat.categoria }}</span>
+                  <span class="text-xs font-semibold text-[#f2a625]">{{ cat.porcentaje }}%</span>
+                </div>
+                <div class="text-lg font-extrabold text-white mt-2">{{ formatMoney(cat.total) }}</div>
+                <div class="w-full h-1.5 bg-black/30 rounded-full mt-3 overflow-hidden">
+                  <div class="h-full rounded-full bg-[#f2a625]" [style.width.%]="cat.porcentaje"></div>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+
+      </div>
+    }
+
+    <!-- ======================================================== -->
+    <!-- VISTA: CONFIGURACIÓN -->
+    <!-- ======================================================== -->
+    @if (activeView() === 'config') {
+      <div class="bg-gradient-to-r from-[#1a8881] to-[#285e6d] rounded-2xl p-6 sm:p-8 shadow-lg shadow-black/15 border border-white/5 flex flex-col gap-6 max-w-3xl">
+        <div>
+          <h2 class="text-2xl font-bold text-white tracking-tight">Configuración del Usuario</h2>
+          <p class="text-xs text-[#95b5bc] mt-0.5">Información de la cuenta y preferencias de la plataforma</p>
+        </div>
+
+        <div class="bg-[#124b60] rounded-2xl p-6 border border-white/5 flex flex-col gap-4">
+          <div class="flex items-center gap-4">
+            <div 
+              (click)="openAvatarModal()" 
+              class="w-16 h-16 rounded-full border-2 border-white/40 overflow-hidden shadow-lg cursor-pointer hover:scale-105 transition-all"
+              title="Click para cambiar foto"
+            >
+              <img [src]="finanzasService.userAvatar()" alt="Avatar" class="w-full h-full object-cover" />
+            </div>
+            <div>
+              <h3 class="text-lg font-bold text-white">{{ authService.currentUser()?.nombre }}</h3>
+              <p class="text-xs text-[#95b5bc]">{{ authService.currentUser()?.email }}</p>
+              <button (click)="openAvatarModal()" class="mt-1 text-xs text-[#f2a625] hover:underline font-semibold">
+                Cambiar foto de perfil
+              </button>
+            </div>
+          </div>
+
+          <div class="pt-4 border-t border-white/10 grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+            <div>
+              <label class="text-[#95b5bc] font-medium">Moneda del Sistema</label>
+              <div class="mt-1 p-2.5 rounded-xl bg-[#1a8881]/50 text-white font-semibold">Quetzales (GTQ - Q)</div>
+            </div>
+            <div>
+              <label class="text-[#95b5bc] font-medium">Zona Horaria</label>
+              <div class="mt-1 p-2.5 rounded-xl bg-[#1a8881]/50 text-white font-semibold">America/Guatemala (UTC-6)</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex justify-end">
+          <button (click)="onLogout()" class="px-6 py-2.5 rounded-full bg-red-500/20 hover:bg-red-500/30 text-red-300 font-semibold text-xs transition-all flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+            Cerrar Sesión Activa
+          </button>
+        </div>
+
+      </div>
+    }
+
+  </main>
+
+  <!-- ======================================================== -->
+  <!-- MODAL: CAMBIAR FOTO DE PERFIL / AVATAR -->
+  <!-- ======================================================== -->
+  @if (showAvatarModal()) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+      <div class="w-full max-w-md bg-[#124b60] border border-white/20 rounded-3xl p-6 sm:p-8 shadow-2xl relative">
+        
+        <div class="flex items-center justify-between pb-4 border-b border-white/10 mb-5">
+          <h3 class="text-xl font-bold text-white">Cambiar Foto de Perfil</h3>
+          <button (click)="showAvatarModal.set(false)" class="text-white/60 hover:text-white text-xl">✕</button>
+        </div>
+
+        <div class="flex flex-col gap-5">
+          <div>
+            <label class="text-xs font-semibold text-[#95b5bc] mb-2 block">Selecciona un Avatar</label>
+            <div class="grid grid-cols-6 gap-2">
+              @for (av of predefinedAvatars; track av) {
+                <div 
+                  (click)="choosePredefinedAvatar(av)"
+                  class="w-12 h-12 rounded-full overflow-hidden border-2 cursor-pointer hover:scale-110 transition-all"
+                  [class.border-[#f2a625]]="finanzasService.userAvatar() === av"
+                  [class.border-transparent]="finanzasService.userAvatar() !== av"
+                >
+                  <img [src]="av" alt="Avatar" class="w-full h-full object-cover" />
+                </div>
+              }
+            </div>
+          </div>
+
+          <div>
+            <label class="text-xs font-semibold text-[#95b5bc] mb-2 block">O sube una imagen desde tu dispositivo</label>
+            <input 
+              type="file" 
+              accept="image/*" 
+              (change)="onAvatarFileSelected($event)"
+              class="w-full text-xs text-[#95b5bc] file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-[#1a8881] file:text-white hover:file:bg-[#285e6d] file:cursor-pointer"
+            />
+          </div>
+
+          <div class="flex flex-col gap-1.5">
+            <label class="text-xs font-semibold text-[#95b5bc]">O ingresa una URL de imagen</label>
+            <div class="flex gap-2">
+              <input 
+                type="text" 
+                [value]="newAvatarUrlInput()" 
+                (input)="newAvatarUrlInput.set($any($event.target).value)"
+                placeholder="https://..." 
+                class="flex-1 h-10 rounded-xl px-3 text-xs bg-[#1a8881]/40 border border-white/10 text-white focus:outline-none focus:ring-1 focus:ring-[#f2a625]"
+              />
+              <button 
+                (click)="saveCustomAvatarUrl()" 
+                class="px-4 h-10 rounded-xl bg-[#f2a625] hover:bg-[#e0951b] text-white text-xs font-bold shadow"
+              >
+                Guardar
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  }
+
+  <!-- ======================================================== -->
+  <!-- MODAL: INGRESAR / EDITAR INGRESO -->
+  <!-- ======================================================== -->
+  @if (showIncomeModal()) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+      <div class="w-full max-w-md bg-[#124b60] border border-white/20 rounded-3xl p-6 sm:p-8 shadow-2xl relative">
+        
+        <div class="flex items-center justify-between pb-4 border-b border-white/10 mb-5">
+          <h3 class="text-xl font-bold text-white">
+            {{ editingItem() ? 'Editar Ingreso' : 'Ingresar los Ingresos' }}
+          </h3>
+          <button (click)="closeModals()" class="text-white/60 hover:text-white text-xl">✕</button>
+        </div>
+
+        @if (formError()) {
+          <div class="mb-4 p-3 rounded-xl bg-red-500/20 border border-red-500/40 text-red-200 text-xs">
+            {{ formError() }}
+          </div>
+        }
+
+        <form [formGroup]="incomeForm" (ngSubmit)="saveIncome()" class="flex flex-col gap-4">
+          
+          <div class="flex flex-col gap-1">
+            <label class="text-xs font-semibold text-[#95b5bc]">Monto (Q)</label>
+            <input 
+              type="number" 
+              step="0.01" 
+              formControlName="monto" 
+              placeholder="Ej. 2500.00"
+              class="w-full h-11 rounded-xl px-4 text-sm bg-[#1a8881]/40 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-[#1ea6b6] border border-white/10"
+            />
+          </div>
+
+          <div class="flex flex-col gap-1">
+            <label class="text-xs font-semibold text-[#95b5bc]">Descripción</label>
+            <input 
+              type="text" 
+              formControlName="descripcion" 
+              placeholder="Ej. Salario mensual / Proyecto"
+              class="w-full h-11 rounded-xl px-4 text-sm bg-[#1a8881]/40 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-[#1ea6b6] border border-white/10"
+            />
+          </div>
+
+          <div class="flex flex-col gap-1">
+            <label class="text-xs font-semibold text-[#95b5bc]">Categoría</label>
+            <select 
+              formControlName="categoria" 
+              class="w-full h-11 rounded-xl px-4 text-sm bg-[#1a8881] text-white focus:outline-none focus:ring-2 focus:ring-[#1ea6b6] border border-white/10"
+            >
+              <option value="Salario">Salario</option>
+              <option value="Servicios">Servicios Profesionales</option>
+              <option value="Freelance">Freelance</option>
+              <option value="Inversiones">Inversiones</option>
+              <option value="Otros">Otros</option>
+            </select>
+          </div>
+
+          <div class="flex flex-col gap-1">
+            <label class="text-xs font-semibold text-[#95b5bc]">Fecha</label>
+            <input 
+              type="date" 
+              formControlName="fecha" 
+              class="w-full h-11 rounded-xl px-4 text-sm bg-[#1a8881] text-white focus:outline-none focus:ring-2 focus:ring-[#1ea6b6] border border-white/10"
+            />
+          </div>
+
+          <div class="flex flex-col gap-1">
+            <label class="text-xs font-semibold text-[#95b5bc]">Estado</label>
+            <select 
+              formControlName="estado" 
+              class="w-full h-11 rounded-xl px-4 text-sm bg-[#1a8881] text-white focus:outline-none focus:ring-2 focus:ring-[#1ea6b6] border border-white/10"
+            >
+              <option value="completado">Completado</option>
+              <option value="pendiente">Pendiente</option>
+            </select>
+          </div>
+
+          <div class="flex justify-end gap-3 pt-3">
+            <button 
+              type="button" 
+              (click)="closeModals()" 
+              class="px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-semibold"
+            >
+              Cancelar
+            </button>
+            <button 
+              type="submit" 
+              [disabled]="formSubmitting()"
+              class="px-6 py-2.5 rounded-xl bg-[#1ea6b6] hover:bg-[#28bed0] text-white text-xs font-bold shadow-lg transition-all disabled:opacity-50"
+            >
+              {{ formSubmitting() ? 'Guardando...' : 'Guardar Ingreso' }}
+            </button>
+          </div>
+
+        </form>
+
+      </div>
+    </div>
+  }
+
+  <!-- ======================================================== -->
+  <!-- MODAL: AGREGAR / EDITAR GASTO -->
+  <!-- ======================================================== -->
+  @if (showExpenseModal()) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+      <div class="w-full max-w-md bg-[#124b60] border border-white/20 rounded-3xl p-6 sm:p-8 shadow-2xl relative">
+        
+        <div class="flex items-center justify-between pb-4 border-b border-white/10 mb-5">
+          <h3 class="text-xl font-bold text-white">
+            {{ editingItem() ? 'Editar Gasto' : 'Agregar Gasto' }}
+          </h3>
+          <button (click)="closeModals()" class="text-white/60 hover:text-white text-xl">✕</button>
+        </div>
+
+        @if (formError()) {
+          <div class="mb-4 p-3 rounded-xl bg-red-500/20 border border-red-500/40 text-red-200 text-xs">
+            {{ formError() }}
+          </div>
+        }
+
+        <form [formGroup]="expenseForm" (ngSubmit)="saveExpense()" class="flex flex-col gap-4">
+          
+          <div class="flex flex-col gap-1">
+            <label class="text-xs font-semibold text-[#95b5bc]">Monto (Q)</label>
+            <input 
+              type="number" 
+              step="0.01" 
+              formControlName="monto" 
+              placeholder="Ej. 850.00"
+              class="w-full h-11 rounded-xl px-4 text-sm bg-[#1a8881]/40 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-[#f2a625] border border-white/10"
+            />
+          </div>
+
+          <div class="flex flex-col gap-1">
+            <label class="text-xs font-semibold text-[#95b5bc]">Descripción</label>
+            <input 
+              type="text" 
+              formControlName="descripcion" 
+              placeholder="Ej. Alquiler / Supermercado / Combustible"
+              class="w-full h-11 rounded-xl px-4 text-sm bg-[#1a8881]/40 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-[#f2a625] border border-white/10"
+            />
+          </div>
+
+          <div class="flex flex-col gap-1">
+            <label class="text-xs font-semibold text-[#95b5bc]">Categoría de Gasto</label>
+            <select 
+              formControlName="categoria" 
+              class="w-full h-11 rounded-xl px-4 text-sm bg-[#1a8881] text-white focus:outline-none focus:ring-2 focus:ring-[#f2a625] border border-white/10"
+            >
+              <option value="Vivienda">Vivienda</option>
+              <option value="Alimentación">Alimentación</option>
+              <option value="Transporte">Transporte</option>
+              <option value="Otros">Otros</option>
+            </select>
+          </div>
+
+          <div class="flex flex-col gap-1">
+            <label class="text-xs font-semibold text-[#95b5bc]">Fecha</label>
+            <input 
+              type="date" 
+              formControlName="fecha" 
+              class="w-full h-11 rounded-xl px-4 text-sm bg-[#1a8881] text-white focus:outline-none focus:ring-2 focus:ring-[#f2a625] border border-white/10"
+            />
+          </div>
+
+          <div class="flex flex-col gap-1">
+            <label class="text-xs font-semibold text-[#95b5bc]">Estado</label>
+            <select 
+              formControlName="estado" 
+              class="w-full h-11 rounded-xl px-4 text-sm bg-[#1a8881] text-white focus:outline-none focus:ring-2 focus:ring-[#f2a625] border border-white/10"
+            >
+              <option value="pagado">Pagado / Cobrado</option>
+              <option value="pendiente">Pendiente / Por Cobrar</option>
+            </select>
+          </div>
+
+          <div class="flex justify-end gap-3 pt-3">
+            <button 
+              type="button" 
+              (click)="closeModals()" 
+              class="px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-semibold"
+            >
+              Cancelar
+            </button>
+            <button 
+              type="submit" 
+              [disabled]="formSubmitting()"
+              class="px-6 py-2.5 rounded-xl bg-[#f2a625] hover:bg-[#e0951b] text-white text-xs font-bold shadow-lg transition-all disabled:opacity-50"
+            >
+              {{ formSubmitting() ? 'Guardando...' : 'Guardar Gasto' }}
+            </button>
+          </div>
+
+        </form>
+
+      </div>
+    </div>
+  }
+
+  <!-- ======================================================== -->
+  <!-- MODAL: CONFIRMACION DE ELIMINACION -->
+  <!-- ======================================================== -->
+  @if (showDeleteConfirm()) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+      <div class="w-full max-w-sm bg-[#124b60] border border-white/20 rounded-3xl p-6 shadow-2xl text-center">
+        
+        <div class="w-12 h-12 rounded-full bg-red-500/20 text-red-400 flex items-center justify-center mx-auto mb-4">
+          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+          </svg>
+        </div>
+
+        <h3 class="text-lg font-bold text-white mb-1">¿Eliminar registro?</h3>
+        <p class="text-xs text-[#95b5bc] mb-6">
+          Se eliminará permanentemente: <br/>
+          <strong class="text-white">"{{ showDeleteConfirm()?.title }}"</strong>
+        </p>
+
+        <div class="flex justify-center gap-3">
+          <button 
+            type="button" 
+            (click)="closeModals()" 
+            class="px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-semibold"
+          >
+            Cancelar
+          </button>
+          <button 
+            type="button" 
+            (click)="executeDelete()"
+            [disabled]="formSubmitting()"
+            class="px-6 py-2.5 rounded-xl bg-red-500 hover:bg-red-600 text-white text-xs font-bold shadow-lg transition-all disabled:opacity-50"
+          >
+            {{ formSubmitting() ? 'Eliminando...' : 'Sí, Eliminar' }}
+          </button>
+        </div>
+
+      </div>
+    </div>
+  }
+
+</div>

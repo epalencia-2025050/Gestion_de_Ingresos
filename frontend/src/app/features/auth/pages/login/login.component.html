@@ -1,0 +1,142 @@
+<div class="min-h-screen w-full bg-transparent text-[#EEF1F4] relative font-sans overflow-hidden flex flex-col justify-between p-6 lg:p-10">
+
+  <!-- LIENZO WEBGL DE FONDO (SEDA ANIMADA) -->
+  <div class="fixed inset-0 pointer-events-none z-0">
+    <canvas #sphereCanvas class="w-full h-full block"></canvas>
+  </div>
+
+  <!-- ENCABEZADO SUPERIOR -->
+  <header class="relative z-10 w-full flex justify-between items-center max-w-[1400px] mx-auto">
+    <div class="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/40 backdrop-blur-md border border-white/10 shadow-lg">
+      <span class="w-2.5 h-2.5 rounded-full bg-[#F5A623] animate-ping"></span>
+      <span class="font-bold text-[11px] uppercase tracking-[0.2em] text-[#EEF1F4]">Sistema de Gestión de Gastos</span>
+    </div>
+  </header>
+
+  <!-- CONTENIDO CENTRAL CENTRADO -->
+  <main class="relative z-10 w-full max-w-[500px] mx-auto flex flex-col items-center justify-center my-auto py-4">
+    
+    <!-- BRANDING SUPERIOR -->
+    <div class="flex flex-col items-center text-center mb-6 z-20">
+      <div class="w-20 h-20 rounded-2xl bg-gradient-to-tr from-[#0F2C4C] via-[#1E8A5D] to-[#17A398] p-3 flex items-center justify-center shadow-2xl border border-white/20 mb-3 hover:scale-105 transition-transform duration-300">
+        <svg viewBox="0 0 100 100" class="w-full h-full fill-none" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="10" y="22" width="80" height="56" rx="10" fill="#EEF1F4" />
+          <path d="M10 22 H90 V36 H10 Z" fill="#F5A623" />
+          <path d="M15 58 L35 38 L52 52 L82 18" stroke="#1E8A5D" stroke-width="9" />
+          <polygon points="82,18 82,32 68,18" fill="#1E8A5D" />
+          <circle cx="70" cy="58" r="7" fill="#17A398" />
+        </svg>
+      </div>
+
+      <h1 class="text-2xl lg:text-3xl font-extrabold tracking-tight text-white leading-tight drop-shadow-md">
+        Sistema de <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#17A398] via-[#1E8A5D] to-[#F5A623]">Gestión de Gastos</span>
+      </h1>
+      <p class="text-[10px] uppercase tracking-[0.25em] text-[#EEF1F4]/80 font-semibold mt-1 drop-shadow">
+        Control Inteligente de tus Finanzas
+      </p>
+    </div>
+
+    <!-- TARJETA DE LOGIN CENTRADA -->
+    <div class="w-full bg-[#0F2C4C]/65 backdrop-blur-2xl border border-white/20 rounded-3xl p-8 lg:p-10 shadow-[0_25px_60px_rgba(0,0,0,0.6)] relative z-30">
+      
+      <div class="flex items-center justify-between mb-6 pb-4 border-b border-white/10">
+        <div>
+          <h2 class="text-2xl font-bold text-white tracking-tight">Iniciar Sesión</h2>
+          <p class="text-xs text-[#EEF1F4]/70 mt-0.5">Accede a tu plataforma financiera</p>
+        </div>
+        <span class="px-3 py-1 rounded-full text-[10px] font-semibold tracking-wider uppercase bg-[#17A398]/30 text-[#EEF1F4] border border-[#17A398]/50 shadow">
+          Seguro
+        </span>
+      </div>
+
+      <!-- Mensajes de Alerta -->
+      <div *ngIf="sessionExpiredMessage()" class="mb-5 p-3 rounded-xl bg-[#F5A623]/20 border border-[#F5A623]/50 text-[#EEF1F4] text-xs flex items-center gap-2 backdrop-blur-md">
+        <svg class="w-4 h-4 text-[#F5A623] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+        <span>{{ sessionExpiredMessage() }}</span>
+      </div>
+
+      <div *ngIf="errorMessage()" class="mb-5 p-3 rounded-xl bg-red-500/20 border border-red-500/50 text-red-100 text-xs flex items-center gap-2 backdrop-blur-md">
+        <svg class="w-4 h-4 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <span>{{ errorMessage() }}</span>
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
+        
+        <!-- Correo Electrónico -->
+        <div class="flex flex-col gap-1.5">
+          <label class="text-xs font-semibold text-[#EEF1F4]/90 ml-1">Correo Electrónico</label>
+          <div class="relative flex items-center">
+            <span class="absolute left-4 text-[#0F2C4C]/70">
+              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"/></svg>
+            </span>
+            <input 
+              formControlName="email"
+              type="email" 
+              placeholder="nombre@ejemplo.com" 
+              class="w-full h-12 rounded-xl pl-12 pr-4 text-sm bg-[#EEF1F4]/95 text-[#2B2D33] placeholder-[#2B2D33]/40 font-medium focus:outline-none focus:ring-2 focus:ring-[#17A398] transition-all shadow-inner"
+            />
+          </div>
+          <span *ngIf="email?.touched && email?.errors?.['required']" class="text-[10px] text-red-300 pl-1 font-medium">
+            Campo requerido.
+          </span>
+          <span *ngIf="email?.touched && email?.errors?.['email']" class="text-[10px] text-red-300 pl-1 font-medium">
+            Formato de correo no válido.
+          </span>
+        </div>
+
+        <!-- Contraseña -->
+        <div class="flex flex-col gap-1.5">
+          <label class="text-xs font-semibold text-[#EEF1F4]/90 ml-1">Contraseña</label>
+          <div class="relative flex items-center">
+            <span class="absolute left-4 text-[#0F2C4C]/70">
+              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+            </span>
+            <input 
+              formControlName="password"
+              [type]="showPassword() ? 'text' : 'password'" 
+              placeholder="••••••••" 
+              class="w-full h-12 rounded-xl pl-12 pr-12 text-sm bg-[#EEF1F4]/95 text-[#2B2D33] placeholder-[#2B2D33]/40 font-medium focus:outline-none focus:ring-2 focus:ring-[#17A398] transition-all shadow-inner"
+            />
+            <button 
+              type="button" 
+              (click)="togglePasswordVisibility()" 
+              class="absolute right-4 text-[#2B2D33]/60 hover:text-[#0F2C4C] transition-colors focus:outline-none"
+            >
+              <svg *ngIf="!showPassword()" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+              <svg *ngIf="showPassword()" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858-5.858A9.954 9.954 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m-0.469 0.469L3 3l18 18"/></svg>
+            </button>
+          </div>
+          <span *ngIf="password?.touched && password?.errors?.['required']" class="text-[10px] text-red-300 pl-1 font-medium">
+            Ingresa tu contraseña.
+          </span>
+        </div>
+
+        <div class="flex justify-end">
+          <a href="#" class="text-xs text-[#17A398] hover:text-[#F5A623] transition-colors font-medium">
+            ¿Olvidaste tu contraseña?
+          </a>
+        </div>
+
+        <!-- Botón de Iniciar Sesión -->
+        <button 
+          type="submit" 
+          [disabled]="loading()"
+          class="w-full h-12 mt-1 rounded-xl bg-gradient-to-r from-[#1E8A5D] via-[#17A398] to-[#1E8A5D] text-white font-semibold text-sm hover:brightness-110 active:scale-[0.98] transition-all shadow-lg shadow-[#17A398]/30 flex items-center justify-center gap-2 disabled:opacity-50"
+        >
+          <span *ngIf="loading()" class="inline-block animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></span>
+          <span>{{ loading() ? 'Iniciando...' : 'Iniciar Sesión' }}</span>
+          <svg *ngIf="!loading()" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+        </button>
+
+      </form>
+
+    </div>
+
+  </main>
+
+  <!-- PIE DE PÁGINA -->
+  <footer class="relative z-10 w-full text-center max-w-[1400px] mx-auto">
+    <p class="text-[11px] text-[#EEF1F4]/60 drop-shadow">© 2026 Sistema de Gestión de Gastos. Todos los derechos reservados.</p>
+  </footer>
+
+</div>
