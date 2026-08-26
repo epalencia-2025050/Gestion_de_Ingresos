@@ -11,13 +11,13 @@
     <!-- Top Branding & Navigation -->
     <div class="flex flex-col gap-8">
       
-      <!-- NUEVO LOGO + TITULO -->
+      <!-- LOGO + TITULO -->
       <div class="flex items-center gap-3.5 pt-2">
-        <div class="w-14 h-14 rounded-2xl p-0.5 flex items-center justify-center shrink-0 shadow-lg">
+        <div class="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 shadow-lg overflow-hidden">
           <img 
             src="assets/branding/logo.png" 
             alt="Logo Gestión de Ingresos" 
-            class="w-full h-full object-contain rounded-2xl shadow-md"
+            class="w-full h-full object-cover"
           />
         </div>
         <div class="flex flex-col">
@@ -26,14 +26,14 @@
         </div>
       </div>
 
-      <!-- BOTONES DEL MENU (GRADIENTE #1a8881 - #285e6d Y LENGÜETAS NARANJAS #f2a625) -->
+      <!-- BOTONES DEL MENU -->
       <nav class="flex flex-col gap-3.5 mt-2">
 
         <!-- 1. Menu (Dashboard Home) -->
         <div class="flex items-center gap-3 group cursor-pointer" (click)="setView('dashboard')">
-          <div class="w-7 h-7 flex items-center justify-center shrink-0 text-white/80 group-hover:text-white">
-            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+          <div class="w-10 h-10 flex items-center justify-center shrink-0 bg-[#f2a625] rounded-xl shadow-md">
+            <svg class="w-5 h-5 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M4 6h16M4 12h16M4 18h16"/>
             </svg>
           </div>
           <div 
@@ -47,9 +47,9 @@
 
         <!-- 2. Ingresar los ingresos -->
         <div class="flex items-center gap-3 group cursor-pointer" (click)="openAddIncomeModal()">
-          <div class="w-7 h-7 flex items-center justify-center shrink-0 text-white/80 group-hover:text-white">
-            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>
+          <div class="w-10 h-10 flex items-center justify-center shrink-0 bg-[#f2a625] rounded-xl shadow-md">
+            <svg class="w-5 h-5 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>
             </svg>
           </div>
           <div class="flex-1 h-10 bg-gradient-to-r from-[#1a8881] to-[#285e6d] hover:brightness-110 rounded-full flex items-center justify-between pl-4 pr-0 transition-all shadow-md overflow-hidden">
@@ -60,9 +60,9 @@
 
         <!-- 3. Agregar gasto -->
         <div class="flex items-center gap-3 group cursor-pointer" (click)="openAddExpenseModal()">
-          <div class="w-7 h-7 flex items-center justify-center shrink-0 text-white/80 group-hover:text-white">
-            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          <div class="w-10 h-10 flex items-center justify-center shrink-0 bg-[#f2a625] rounded-xl shadow-md">
+            <svg class="w-5 h-5 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
             </svg>
           </div>
           <div class="flex-1 h-10 bg-gradient-to-r from-[#1a8881] to-[#285e6d] hover:brightness-110 rounded-full flex items-center justify-between pl-4 pr-0 transition-all shadow-md overflow-hidden">
@@ -73,9 +73,9 @@
 
         <!-- 4. Historial de gastos -->
         <div class="flex items-center gap-3 group cursor-pointer" (click)="setView('history')">
-          <div class="w-7 h-7 flex items-center justify-center shrink-0 text-white/80 group-hover:text-white">
-            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+          <div class="w-10 h-10 flex items-center justify-center shrink-0 bg-[#f2a625] rounded-xl shadow-md">
+            <svg class="w-5 h-5 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
             </svg>
           </div>
           <div 
@@ -89,9 +89,9 @@
 
         <!-- 5. Reportes -->
         <div class="flex items-center gap-3 group cursor-pointer" (click)="setView('reports')">
-          <div class="w-7 h-7 flex items-center justify-center shrink-0 text-white/80 group-hover:text-white">
-            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+          <div class="w-10 h-10 flex items-center justify-center shrink-0 bg-[#f2a625] rounded-xl shadow-md">
+            <svg class="w-5 h-5 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
             </svg>
           </div>
           <div 
@@ -105,10 +105,10 @@
 
         <!-- 6. Configuracion -->
         <div class="flex items-center gap-3 group cursor-pointer" (click)="setView('config')">
-          <div class="w-7 h-7 flex items-center justify-center shrink-0 text-white/80 group-hover:text-white">
-            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+          <div class="w-10 h-10 flex items-center justify-center shrink-0 bg-[#f2a625] rounded-xl shadow-md">
+            <svg class="w-5 h-5 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
             </svg>
           </div>
           <div 
@@ -123,17 +123,18 @@
       </nav>
     </div>
 
-    <!-- BOTON CERRAR SESION (#f2a625) -->
-    <div class="pt-8 lg:pt-12">
+    <!-- BOTON CERRAR SESION - ancho reducido y centrado -->
+    <div class="pt-8 lg:pt-12 flex justify-center">
       <button 
         (click)="onLogout()"
-        class="w-full h-11 bg-[#f2a625] hover:bg-[#e0951b] text-white rounded-full flex items-center justify-between pl-0 pr-4 shadow-lg shadow-black/20 transition-all active:scale-[0.98] group overflow-hidden"
+        class="w-[205px] h-10 bg-[#1a8881] rounded-full flex items-center pl-2.5 pr-0 shadow-lg shadow-black/20 transition-all active:scale-[0.98] group overflow-hidden"
       >
-        <span class="w-4 h-full bg-[#1a8881] rounded-l-full shrink-0"></span>
-        <span class="text-sm font-semibold tracking-wide flex-1 text-center">Cerrar sesion</span>
-        <svg class="w-5 h-5 text-white shrink-0 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
-        </svg>
+        <div class="flex-1 h-full bg-[#f2a625] hover:bg-[#e0951b] rounded-full flex items-center justify-between px-4 transition-colors">
+          <span class="text-xs sm:text-sm font-normal text-white tracking-wide">Cerrar sesion</span>
+          <svg class="w-4 h-4 text-[#2b2d33] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+          </svg>
+        </div>
       </button>
     </div>
   </aside>
@@ -143,7 +144,7 @@
   <!-- ======================================================== -->
   <main class="flex-1 flex flex-col min-w-0 p-5 sm:p-7 lg:p-10 max-w-[1600px] mx-auto w-full">
 
-    <!-- TOP BAR (HEADER CON BUSCADOR NARANJA #f2a625, NOTIFICACIONES Y AVATAR) -->
+    <!-- TOP BAR: barra de busqueda a la izquierda, campana y avatar mas grandes a la derecha -->
     <header class="w-full flex items-center justify-between gap-4 mb-6 relative">
       
       <!-- Mobile hamburger toggle -->
@@ -156,79 +157,75 @@
         </svg>
       </button>
 
-      <div class="hidden sm:flex items-center gap-2">
-        <span class="text-xs uppercase tracking-widest text-[#95b5bc] font-semibold">
-          {{ authService.currentUser()?.nombre || 'Usuario' }}
-        </span>
-      </div>
-
-      <!-- BUSCADOR NARANJA + CAMPANA + AVATAR -->
-      <div class="flex items-center gap-4 ml-auto relative">
-        
-        <!-- BUSCADOR PÍLDORA NARANJA (#f2a625) -->
-        <div class="relative flex items-center">
-          <div class="w-48 sm:w-64 md:w-80 h-10 bg-[#f2a625] rounded-full flex items-center px-4 shadow-md text-[#2b2d33] transition-all focus-within:ring-2 focus-within:ring-white/50">
-            <svg class="w-4 h-4 text-[#2b2d33] shrink-0 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+      <!-- BUSCADOR NARANJA CON PESTAÑA TEAL A LA IZQUIERDA -->
+      <div class="relative flex items-center">
+        <div class="h-10 bg-[#1a8881] rounded-full pl-2.5 pr-0 flex items-center shadow-md">
+          <div class="h-full w-44 sm:w-56 md:w-72 bg-[#f2a625] rounded-full flex items-center px-4 text-[#2b2d33] transition-all focus-within:ring-2 focus-within:ring-white/40">
+            <svg class="w-4 h-4 text-[#2b2d33] shrink-0 mr-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
             </svg>
             <input 
               type="text" 
               placeholder="Search" 
               [value]="searchControl()"
               (input)="onSearch($event)"
-              class="w-full bg-transparent border-none text-sm font-medium text-[#2b2d33] placeholder-[#2b2d33]/70 focus:outline-none"
+              class="w-full bg-transparent border-none text-sm font-normal text-[#2b2d33] placeholder-[#2b2d33]/80 focus:outline-none"
             />
             @if (searchControl()) {
               <button (click)="searchControl.set(''); showSearchDropdown.set(false)" class="text-xs text-[#2b2d33]/80 hover:text-black ml-1 font-bold">✕</button>
             }
           </div>
-
-          <!-- DROPDOWN DE RESULTADOS EN TIEMPO REAL -->
-          @if (showSearchDropdown() && searchControl().trim().length > 0) {
-            <div class="absolute top-12 left-0 w-80 sm:w-96 bg-[#124b60] border border-white/20 rounded-2xl shadow-2xl p-3 z-50 animate-fade-in max-h-80 overflow-y-auto">
-              <div class="text-[11px] font-semibold text-[#95b5bc] px-2 py-1 uppercase tracking-wider border-b border-white/10 mb-1">
-                Resultados de búsqueda ({{ filteredTransactions().length }})
-              </div>
-              @for (item of filteredTransactions().slice(0, 6); track item.id) {
-                <div 
-                  (click)="selectSearchResult(item)" 
-                  class="p-2.5 rounded-xl hover:bg-white/10 cursor-pointer transition-colors flex items-center justify-between gap-2"
-                >
-                  <div class="flex flex-col min-w-0">
-                    <span class="text-xs font-bold text-white truncate">{{ item.descripcion }}</span>
-                    <span class="text-[10px] text-[#95b5bc]">{{ item.categoria }} • {{ item.fecha }}</span>
-                  </div>
-                  <div class="text-right shrink-0">
-                    <span 
-                      class="text-xs font-extrabold"
-                      [class.text-[#28bed0]]="item.transactionType === 'ingreso'"
-                      [class.text-[#f2a625]]="item.transactionType === 'gasto'"
-                    >
-                      {{ item.transactionType === 'ingreso' ? '+' : '-' }}{{ formatMoney(item.monto) }}
-                    </span>
-                  </div>
-                </div>
-              } @empty {
-                <div class="p-4 text-center text-xs text-[#95b5bc]">
-                  No se encontraron coincidencias para "{{ searchControl() }}"
-                </div>
-              }
-            </div>
-          }
         </div>
 
-        <!-- BOTON CAMPANA NOTIFICACIONES EN TIEMPO REAL -->
-        <div class="relative">
+        <!-- DROPDOWN DE RESULTADOS EN TIEMPO REAL -->
+        @if (showSearchDropdown() && searchControl().trim().length > 0) {
+          <div class="absolute top-12 left-0 w-80 sm:w-96 bg-[#124b60] border border-white/20 rounded-2xl shadow-2xl p-3 z-50 animate-fade-in max-h-80 overflow-y-auto">
+            <div class="text-[11px] font-semibold text-[#95b5bc] px-2 py-1 uppercase tracking-wider border-b border-white/10 mb-1">
+              Resultados de búsqueda ({{ filteredTransactions().length }})
+            </div>
+            @for (item of filteredTransactions().slice(0, 6); track item.id) {
+              <div 
+                (click)="selectSearchResult(item)" 
+                class="p-2.5 rounded-xl hover:bg-white/10 cursor-pointer transition-colors flex items-center justify-between gap-2"
+              >
+                <div class="flex flex-col min-w-0">
+                  <span class="text-xs font-bold text-white truncate">{{ item.descripcion }}</span>
+                  <span class="text-[10px] text-[#95b5bc]">{{ item.categoria }} • {{ item.fecha }}</span>
+                </div>
+                <div class="text-right shrink-0">
+                  <span 
+                    class="text-xs font-extrabold"
+                    [class.text-[#28bed0]]="item.transactionType === 'ingreso'"
+                    [class.text-[#f2a625]]="item.transactionType === 'gasto'"
+                  >
+                    {{ item.transactionType === 'ingreso' ? '+' : '-' }}{{ formatMoney(item.monto) }}
+                  </span>
+                </div>
+              </div>
+            } @empty {
+              <div class="p-4 text-center text-xs text-[#95b5bc]">
+                No se encontraron coincidencias para "{{ searchControl() }}"
+              </div>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- CAMPANA + AVATAR (DERECHA - TAMAÑO MÁS GRANDE) -->
+      <div class="flex items-center gap-5 sm:gap-6 ml-auto relative">
+
+        <!-- BOTON CAMPANA NOTIFICACIONES (MÁS GRANDE CON BADGE CIRCULAR NARANJA) -->
+        <div class="relative flex items-center justify-center">
           <button 
             (click)="toggleNotifications()"
-            class="w-10 h-10 rounded-full flex items-center justify-center text-white hover:bg-white/10 transition-colors relative"
+            class="w-12 h-12 rounded-full flex items-center justify-center text-white hover:bg-white/10 transition-colors relative"
             title="Notificaciones en tiempo real"
           >
-            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+            <svg class="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
             </svg>
             @if (unreadNotificationsCount() > 0) {
-              <span class="absolute top-1.5 right-1.5 min-w-[18px] h-[18px] px-1 rounded-full bg-[#f2a625] text-[#2b2d33] font-bold text-[10px] flex items-center justify-center shadow">
+              <span class="absolute top-0 right-0 min-w-[22px] h-[22px] px-1 rounded-full bg-[#f2a625] text-black font-extrabold text-xs flex items-center justify-center shadow-md">
                 {{ unreadNotificationsCount() }}
               </span>
             }
@@ -236,7 +233,7 @@
 
           <!-- DROPDOWN DE NOTIFICACIONES -->
           @if (showNotifications()) {
-            <div class="absolute right-0 top-12 w-80 sm:w-96 bg-[#124b60] border border-white/20 rounded-2xl shadow-2xl p-4 z-50 animate-fade-in max-h-96 flex flex-col">
+            <div class="absolute right-0 top-14 w-80 sm:w-96 bg-[#124b60] border border-white/20 rounded-2xl shadow-2xl p-4 z-50 animate-fade-in max-h-96 flex flex-col">
               <div class="flex items-center justify-between pb-3 border-b border-white/10 mb-2">
                 <span class="text-xs font-bold text-white uppercase tracking-wider">Notificaciones Recientes</span>
                 <button (click)="clearAllNotifications()" class="text-[10px] text-[#f2a625] hover:underline">
@@ -275,10 +272,10 @@
           }
         </div>
 
-        <!-- AVATAR CIRCULAR (CLICK PARA CAMBIAR FOTO) -->
+        <!-- AVATAR CIRCULAR (MÁS GRANDE CON BORDE TEAL #38ada9) -->
         <div 
           (click)="openAvatarModal()"
-          class="w-10 h-10 rounded-full border-2 border-white/30 overflow-hidden shadow-md shrink-0 bg-[#1a8881] flex items-center justify-center text-white font-bold text-sm cursor-pointer hover:border-[#f2a625] hover:scale-105 transition-all relative group"
+          class="w-14 h-14 sm:w-16 sm:h-16 rounded-full border-[3px] border-[#3eb5a4] overflow-hidden shadow-lg shrink-0 bg-[#1a8881] flex items-center justify-center text-white font-bold text-base cursor-pointer hover:scale-105 transition-all relative group"
           title="Click para cambiar foto de perfil"
         >
           <img 
@@ -314,7 +311,7 @@
             </div>
           </div>
           <div class="text-[11px] text-[#95b5bc] mt-3 flex items-center gap-1 font-medium">
-            <span>+24% este mes</span>
+            <span>{{ finanzasService.resumen().porcentajeSaldoMes > 0 ? ('+' + finanzasService.resumen().porcentajeSaldoMes + '% este mes') : '0% este mes' }}</span>
           </div>
         </div>
 
@@ -327,7 +324,7 @@
             </div>
           </div>
           <div class="text-[11px] text-[#95b5bc] mt-3 flex items-center gap-1 font-medium">
-            <span>+ 5.1 % este mes</span>
+            <span>{{ finanzasService.resumen().porcentajeAhorroMes > 0 ? ('+' + finanzasService.resumen().porcentajeAhorroMes + '% este mes') : '0% este mes' }}</span>
           </div>
         </div>
 
@@ -420,89 +417,6 @@
 
         </div>
 
-      </div>
-
-      <!-- TABLA RESUMEN DE ACTIVIDAD RECIENTE -->
-      <div class="bg-gradient-to-r from-[#1a8881] to-[#285e6d] rounded-2xl p-6 shadow-lg shadow-black/15 border border-white/5">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-3 border-b border-white/10">
-          <div>
-            <h3 class="text-lg font-bold text-white">Actividad Reciente</h3>
-            <p class="text-xs text-[#95b5bc]">Últimos movimientos registrados en el sistema</p>
-          </div>
-          <div class="flex items-center gap-2">
-            <button (click)="openAddIncomeModal()" class="px-3.5 py-1.5 rounded-full bg-[#1ea6b6] hover:bg-[#28bed0] text-xs font-semibold text-white transition-all shadow">
-              + Ingreso
-            </button>
-            <button (click)="openAddExpenseModal()" class="px-3.5 py-1.5 rounded-full bg-[#f2a625] hover:bg-[#e0951b] text-xs font-semibold text-white transition-all shadow">
-              + Gasto
-            </button>
-            <button (click)="setView('history')" class="text-xs text-[#95b5bc] hover:text-white underline ml-2">
-              Ver todo
-            </button>
-          </div>
-        </div>
-
-        <div class="overflow-x-auto">
-          <table class="w-full text-left text-xs">
-            <thead>
-              <tr class="text-[#95b5bc] border-b border-white/10 uppercase tracking-wider font-semibold">
-                <th class="pb-3 pl-2">Descripción</th>
-                <th class="pb-3">Tipo</th>
-                <th class="pb-3">Categoría</th>
-                <th class="pb-3">Fecha</th>
-                <th class="pb-3">Estado</th>
-                <th class="pb-3 text-right pr-2">Monto</th>
-                <th class="pb-3 text-center">Acciones</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-white/5">
-              @for (item of filteredTransactions().slice(0, 5); track item.id) {
-                <tr class="hover:bg-white/5 transition-colors">
-                  <td class="py-3 pl-2 font-medium text-white flex items-center gap-2">
-                    <span 
-                      class="w-2 h-2 rounded-full shrink-0"
-                      [ngClass]="item.transactionType === 'ingreso' ? 'bg-[#1ea6b6]' : 'bg-[#f2a625]'"
-                    ></span>
-                    <span class="truncate max-w-[200px]">{{ item.descripcion }}</span>
-                  </td>
-                  <td class="py-3 capitalize text-[#95b5bc]">{{ item.transactionType }}</td>
-                  <td class="py-3 text-[#95b5bc]">{{ item.categoria }}</td>
-                  <td class="py-3 text-[#95b5bc]">{{ item.fecha }}</td>
-                  <td class="py-3">
-                    <span 
-                      class="px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase"
-                      [ngClass]="(item.estado === 'pagado' || item.estado === 'completado') ? 'bg-[#1ea6b6]/20 text-[#28bed0]' : 'bg-[#f2a625]/20 text-[#f2a625]'"
-                    >
-                      {{ item.estado }}
-                    </span>
-                  </td>
-                  <td 
-                    class="py-3 text-right pr-2 font-bold"
-                    [ngClass]="item.transactionType === 'ingreso' ? 'text-[#28bed0]' : 'text-[#f2a625]'"
-                  >
-                    {{ item.transactionType === 'ingreso' ? '+' : '-' }}{{ formatMoney(item.monto) }}
-                  </td>
-                  <td class="py-3 text-center">
-                    <div class="flex items-center justify-center gap-2">
-                      <button (click)="openEditModal(item)" title="Editar" class="p-1 text-[#95b5bc] hover:text-white transition-colors">
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
-                      </button>
-                      <button (click)="confirmDelete(item)" title="Eliminar" class="p-1 text-[#95b5bc] hover:text-red-400 transition-colors">
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              } @empty {
-                <tr>
-                  <td colspan="7" class="py-6 text-center text-[#95b5bc]">
-                    No se encontraron transacciones. ¡Registra tus primeros ingresos o gastos con los botones superiores!
-                  </td>
-                </tr>
-              }
-            </tbody>
-          </table>
-        </div>
       </div>
 
     }
