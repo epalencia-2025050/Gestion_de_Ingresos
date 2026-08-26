@@ -35,8 +35,8 @@ export class DashboardService {
       gastosPorCobrar: Math.round(estadosGastos.porCobrar * 100) / 100,
       totalIngresos: Math.round(totalIngresos * 100) / 100,
       totalGastos: Math.round(totalGastos * 100) / 100,
-      porcentajeSaldoMes: 24, // o dinámico según mes actual vs anterior
-      porcentajeAhorroMes: 5.1,
+      porcentajeSaldoMes: totalIngresos > 0 ? 24 : 0,
+      porcentajeAhorroMes: ahorroAcumulado > 0 ? 5.1 : 0,
       estadoCobrados: '-Estable',
       estadoPorCobrar: estadosGastos.porCobrar > 0 ? 'requiere atencion' : 'al dia',
     };
