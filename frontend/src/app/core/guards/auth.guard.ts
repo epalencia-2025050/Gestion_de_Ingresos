@@ -8,9 +8,18 @@ export const authGuard: CanActivateFn = () => {
   const router = inject(Router);
 
   if (authService.isAuthenticated()) {
+    if (authService.isTokenExpired()) {
+      authService.logout(true);
+      return false;
+    }
     return true;
   }
 
-  router.navigate(['/login']);
+  const teniaToken = !!authService.getToken();
+  if (teniaToken) {
+    authService.logout(true);
+  } else {
+    router.navigate(['/login']);
+  }
   return false;
 };

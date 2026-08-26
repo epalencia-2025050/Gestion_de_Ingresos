@@ -15,19 +15,10 @@ export const authErrorInterceptor: HttpInterceptorFn = (req, next) => {
 
         if (!esPeticionDeLogin) {
           // 1. Verificar si existía una sesión/token antes del error
-          const teniaSesionActiva = !!authService.getToken(); // o localStorage.getItem('token')
+          const teniaSesionActiva = !!authService.getToken();
 
-          // 2. Limpiar el estado de la sesión local
-          authService.logout();
-
-          // 3. Redirigir enviando queryParams SOLO si realmente había una sesión activa que venció
-          if (teniaSesionActiva) {
-            router.navigate(['/login'], {
-              queryParams: { sessionExpired: 'true' },
-            });
-          } else {
-            router.navigate(['/login']);
-          }
+          // 2. Limpiar la sesión y redirigir mostrando mensaje si expiró
+          authService.logout(teniaSesionActiva);
         }
       }
       return throwError(() => error);

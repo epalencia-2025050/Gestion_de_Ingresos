@@ -1,4 +1,4 @@
-import { Injectable, computed, signal } from '@angular/core';
+import { Injectable, computed, signal, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
@@ -17,7 +17,7 @@ interface DecodedJwtPayload {
 }
 
 @Injectable({ providedIn: 'root' })
-export class AuthService {
+export class AuthService implements OnDestroy {
   // Signal privada con el usuario actual (null si no hay sesion)
   private readonly currentUserSignal = signal<User | null>(this.loadUserFromStorage());
 
@@ -30,26 +30,50 @@ export class AuthService {
   // Signal derivada: true si el usuario autenticado tiene rol 'admin'
   readonly isAdmin = computed(() => this.currentUserSignal()?.rol === 'admin');
 
+  // Signal para almacenar el mensaje de expiración de sesión
+  readonly sessionExpiredMessage = signal<string | null>(null);
+
+  /** Handle del setTimeout para poder cancelarlo en logout o al destruir */
+  private expiryTimer: ReturnType<typeof setTimeout> | null = null;
+
   constructor(
     private readonly http: HttpClient,
     private readonly router: Router,
-  ) {}
+  ) {
+    // Al arrancar la app, si ya había una sesión guardada, programa el cierre automático
+    this.scheduleTokenExpiry();
+  }
+
+  ngOnDestroy(): void {
+    this.cancelTokenExpiry();
+  }
 
   login(credentials: LoginRequest): Observable<LoginResponse> {
     return this.http
       .post<LoginResponse>(`${environment.apiUrl}/auth/login`, credentials)
       .pipe(
         tap((response) => {
+          this.sessionExpiredMessage.set(null);
           this.setSession(response.data.token, response.data.user);
         }),
       );
   }
 
-  logout(): void {
+  logout(sessionExpired: boolean = false): void {
+    this.cancelTokenExpiry();
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(USER_KEY);
     this.currentUserSignal.set(null);
-    this.router.navigate(['/login']);
+
+    if (sessionExpired) {
+      this.sessionExpiredMessage.set('Tu sesión ha expirado. Por favor, inicia sesión nuevamente.');
+      this.router.navigate(['/login'], {
+        queryParams: { sessionExpired: 'true' },
+      });
+    } else {
+      this.sessionExpiredMessage.set(null);
+      this.router.navigate(['/login']);
+    }
   }
 
   getToken(): string | null {
@@ -91,6 +115,46 @@ export class AuthService {
   }
 
   /**
+   * Programa un setTimeout que llama a logout() exactamente cuando
+   * el token expire. Se cancela si el usuario hace logout manual antes.
+   *
+   * El maximo de setTimeout es ~24.8 dias (2^31 ms). Para tokens con
+   * expiracion mayor se puede usar setInterval, pero con JWT_EXPIRES_IN=24h
+   * este valor es siempre seguro.
+   */
+  scheduleTokenExpiry(): void {
+    this.cancelTokenExpiry(); // limpiar timer previo si existia
+
+    const token = this.getToken();
+    if (!token) return;
+
+    const payload = this.decodeToken(token);
+    if (!payload?.exp) return;
+
+    const nowMs = Date.now();
+    const expiryMs = payload.exp * 1000; // convertir segundos a milisegundos
+    const msUntilExpiry = expiryMs - nowMs;
+
+    if (msUntilExpiry <= 0) {
+      // Ya expiró: cerrar sesión inmediatamente notificando expiración
+      this.logout(true);
+      return;
+    }
+
+    this.expiryTimer = setTimeout(() => {
+      this.logout(true);
+    }, msUntilExpiry);
+  }
+
+  /** Cancela el timer de expiración si existe. */
+  private cancelTokenExpiry(): void {
+    if (this.expiryTimer !== null) {
+      clearTimeout(this.expiryTimer);
+      this.expiryTimer = null;
+    }
+  }
+
+  /**
    * Decodifica la parte "payload" de un JWT (segunda seccion, separada por
    * puntos) sin verificar la firma. Verificar la firma es responsabilidad
    * exclusiva del backend; aqui solo queremos LEER datos publicos como "exp".
@@ -119,6 +183,8 @@ export class AuthService {
     localStorage.setItem(TOKEN_KEY, token);
     localStorage.setItem(USER_KEY, JSON.stringify(user));
     this.currentUserSignal.set(user);
+    // Programar el cierre automático en cuanto guardamos la nueva sesión
+    this.scheduleTokenExpiry();
   }
 
   private loadUserFromStorage(): User | null {
