@@ -1,3 +1,9 @@
+/**
+ * ============================================================================
+ * SERVICIO: LÓGICA DE NEGOCIO PARA INGRESOS (GITHUB COMMIT)
+ * Valida montos, descripciones, categorías y ejecuta reglas de negocio financieras.
+ * ============================================================================
+ */
 import { ingresoRepository } from '../repositories/ingreso.repository';
 import { CreateIngresoDto, Ingreso, toIngresoDto, UpdateIngresoDto } from '../models/ingreso.model';
 
