@@ -149,7 +149,10 @@ export class FinanzasService {
     });
   }
 
-  // --- CRUD Ingresos ---
+  // =========================================================================
+  // MÓDULO: SERVICIOS DE GESTIÓN DE INGRESOS (GITHUB COMMIT)
+  // Comunicación HTTP con la API de PostgreSQL para Ingresos y Notificaciones
+  // =========================================================================
   createIngreso(payload: CreateIngresoPayload): Observable<any> {
     return this.http.post(`${this.apiUrl}/ingresos`, payload).pipe(
       tap(() => {
