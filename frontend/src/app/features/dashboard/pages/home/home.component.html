@@ -4,139 +4,182 @@
   <!-- SIDEBAR (IZQUIERDA) -->
   <!-- ======================================================== -->
   <aside 
-    class="w-full lg:w-[280px] xl:w-[300px] shrink-0 bg-[#124b60] border-b lg:border-b-0 lg:border-r border-[#1a8881]/30 flex flex-col justify-between p-6 z-40 transition-all duration-300"
+    class="w-full lg:w-[290px] xl:w-[310px] shrink-0 bg-[#124b60] border-b lg:border-b-0 lg:border-r border-[#1a8881]/30 flex flex-col justify-between p-5 sm:p-6 z-40 transition-all duration-300"
     [class.hidden]="!mobileSidebarOpen()"
     [class.lg:flex]="true"
   >
     <!-- Top Branding & Navigation -->
-    <div class="flex flex-col gap-8">
+    <div class="flex flex-col gap-6">
       
-      <!-- LOGO + TITULO -->
-      <div class="flex items-center gap-3.5 pt-2">
-        <div class="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 shadow-lg overflow-hidden">
+      <!-- LOGO OFICIAL + TITULO -->
+      <div class="flex items-center gap-3 pt-1">
+        <div class="w-13 h-13 rounded-2xl p-0.5 flex items-center justify-center shrink-0 shadow-lg">
           <img 
             src="assets/branding/logo.png" 
             alt="Logo Gestión de Ingresos" 
-            class="w-full h-full object-cover"
+            class="w-12 h-12 object-contain rounded-2xl shadow-md"
           />
         </div>
         <div class="flex flex-col">
-          <span class="text-2xl font-bold tracking-tight text-white leading-none">Gestion de</span>
-          <span class="text-2xl font-bold tracking-tight text-white leading-tight">ingresos</span>
+          <span class="text-xl sm:text-2xl font-bold tracking-tight text-white leading-none">Gestion de</span>
+          <span class="text-xl sm:text-2xl font-bold tracking-tight text-white leading-tight">ingresos</span>
         </div>
       </div>
 
-      <!-- BOTONES DEL MENU -->
-      <nav class="flex flex-col gap-3.5 mt-2">
+      <!-- ======================================================== -->
+      <!-- ======================================================== -->
+      <!-- MENU DE NAVEGACION: COLUMNA VERTICAL NARANJA DE ICONOS + BOTONES PÍLDORA -->
+      <!-- ======================================================== -->
+      <div class="flex items-stretch gap-2.5 mt-1">
+        
+        <!-- TIRA VERTICAL NARANJA CONTINUA CON LOS 6 ICONOS (MÁS GRANDE Y PROMINENTE) -->
+        <div class="w-14 sm:w-16 bg-[#f2a625] rounded-full py-3.5 px-2 flex flex-col justify-between items-center shadow-lg shadow-black/20 shrink-0">
+          
+          <!-- 1. Icono Menu -->
+          <button 
+            (click)="setView('dashboard')" 
+            title="Menu"
+            class="w-10 sm:w-11 h-11 sm:h-12 flex items-center justify-center hover:scale-110 transition-transform overflow-hidden"
+          >
+            <img src="assets/icons/icon-menu.png" alt="Menu" class="w-7 h-7 sm:w-7.5 sm:h-7.5 object-contain" />
+          </button>
 
-        <!-- 1. Menu (Dashboard Home) -->
-        <div class="flex items-center gap-3 group cursor-pointer" (click)="setView('dashboard')">
-          <div class="w-10 h-10 flex items-center justify-center shrink-0 bg-[#f2a625] rounded-xl shadow-md">
-            <svg class="w-5 h-5 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M4 6h16M4 12h16M4 18h16"/>
-            </svg>
-          </div>
+          <!-- 2. Icono Ingresar los ingresos -->
+          <button 
+            (click)="setView('ingresos')" 
+            title="Ingresar los ingresos"
+            class="w-10 sm:w-11 h-11 sm:h-12 flex items-center justify-center hover:scale-110 transition-transform overflow-hidden"
+          >
+            <img src="assets/icons/icon-ingresos.png" alt="Ingresar ingresos" class="w-7 h-7 sm:w-7.5 sm:h-7.5 object-contain" />
+          </button>
+
+          <!-- 3. Icono Agregar gasto (Compensado por margen del PNG) -->
+          <button 
+            (click)="openAddExpenseModal()" 
+            title="Agregar gasto"
+            class="w-10 sm:w-11 h-11 sm:h-12 flex items-center justify-center hover:scale-110 transition-transform overflow-hidden"
+          >
+            <img src="assets/icons/icon-gastos.png" alt="Agregar gasto" class="w-9 h-9 sm:w-10 sm:h-10 scale-125 object-contain" />
+          </button>
+
+          <!-- 4. Icono Historial de gastos (Compensado por margen del PNG) -->
+          <button 
+            (click)="setView('history')" 
+            title="Historial de gastos"
+            class="w-10 sm:w-11 h-11 sm:h-12 flex items-center justify-center hover:scale-110 transition-transform overflow-hidden"
+          >
+            <img src="assets/icons/icon-historial.png" alt="Historial de gastos" class="w-8 h-8 sm:w-9 sm:h-9 scale-110 object-contain" />
+          </button>
+
+          <!-- 5. Icono Reportes (Ajustado para igualar proporciones) -->
+          <button 
+            (click)="setView('reports')" 
+            title="Reportes"
+            class="w-10 sm:w-11 h-11 sm:h-12 flex items-center justify-center hover:scale-110 transition-transform overflow-hidden"
+          >
+            <img src="assets/icons/icon-reportes.png" alt="Reportes" class="w-6 h-6 sm:w-6.5 sm:h-6.5 object-contain" />
+          </button>
+
+          <!-- 6. Icono Configuración (Compensado por margen del PNG) -->
+          <button 
+            (click)="setView('config')" 
+            title="Configuracion"
+            class="w-10 sm:w-11 h-11 sm:h-12 flex items-center justify-center hover:scale-110 transition-transform overflow-hidden"
+          >
+            <img src="assets/icons/icon-config.png" alt="Configuración" class="w-9 h-9 sm:w-10 sm:h-10 scale-130 object-contain" />
+          </button>
+
+        </div>
+
+        <!-- 6 BOTONES PÍLDORA DEGRADADOS CON LENGÜETA DERECHA -->
+        <nav class="flex-1 flex flex-col justify-between gap-3">
+          
+          <!-- 1. Menu -->
           <div 
-            class="flex-1 h-10 rounded-full flex items-center justify-between pl-4 pr-0 transition-all shadow-md overflow-hidden bg-gradient-to-r from-[#1a8881] to-[#285e6d] hover:brightness-110"
+            (click)="setView('dashboard')"
+            class="h-11 sm:h-12 rounded-full flex items-center justify-between pl-4 pr-0 cursor-pointer transition-all shadow-md overflow-hidden bg-gradient-to-r from-[#1a8881] to-[#285e6d] hover:brightness-110"
             [ngClass]="activeView() === 'dashboard' ? 'ring-2 ring-white/50' : ''"
           >
-            <span class="text-sm font-medium text-white tracking-wide">Menu</span>
-            <span class="w-3.5 h-full bg-[#f2a625] rounded-r-full shrink-0"></span>
+            <span class="text-xs sm:text-sm font-semibold text-white tracking-wide">Menu</span>
+            <span class="w-4 h-full bg-[#f2a625] rounded-r-full shrink-0"></span>
           </div>
-        </div>
 
-        <!-- 2. Ingresar los ingresos -->
-        <div class="flex items-center gap-3 group cursor-pointer" (click)="openAddIncomeModal()">
-          <div class="w-10 h-10 flex items-center justify-center shrink-0 bg-[#f2a625] rounded-xl shadow-md">
-            <svg class="w-5 h-5 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>
-            </svg>
-          </div>
-          <div class="flex-1 h-10 bg-gradient-to-r from-[#1a8881] to-[#285e6d] hover:brightness-110 rounded-full flex items-center justify-between pl-4 pr-0 transition-all shadow-md overflow-hidden">
-            <span class="text-xs sm:text-sm font-medium text-white tracking-wide truncate pr-1">ingresar los ingresos</span>
-            <span class="w-3.5 h-full bg-[#f2a625] rounded-r-full shrink-0"></span>
-          </div>
-        </div>
-
-        <!-- 3. Agregar gasto -->
-        <div class="flex items-center gap-3 group cursor-pointer" (click)="openAddExpenseModal()">
-          <div class="w-10 h-10 flex items-center justify-center shrink-0 bg-[#f2a625] rounded-xl shadow-md">
-            <svg class="w-5 h-5 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
-          </div>
-          <div class="flex-1 h-10 bg-gradient-to-r from-[#1a8881] to-[#285e6d] hover:brightness-110 rounded-full flex items-center justify-between pl-4 pr-0 transition-all shadow-md overflow-hidden">
-            <span class="text-sm font-medium text-white tracking-wide">Agregar gasto</span>
-            <span class="w-3.5 h-full bg-[#f2a625] rounded-r-full shrink-0"></span>
-          </div>
-        </div>
-
-        <!-- 4. Historial de gastos -->
-        <div class="flex items-center gap-3 group cursor-pointer" (click)="setView('history')">
-          <div class="w-10 h-10 flex items-center justify-center shrink-0 bg-[#f2a625] rounded-xl shadow-md">
-            <svg class="w-5 h-5 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-            </svg>
-          </div>
+          <!-- 2. Ingresar los ingresos -->
           <div 
-            class="flex-1 h-10 rounded-full flex items-center justify-between pl-4 pr-0 transition-all shadow-md overflow-hidden bg-gradient-to-r from-[#1a8881] to-[#285e6d] hover:brightness-110"
+            (click)="setView('ingresos')"
+            class="h-11 sm:h-12 rounded-full flex items-center justify-between pl-4 pr-0 cursor-pointer transition-all shadow-md overflow-hidden bg-gradient-to-r from-[#1a8881] to-[#285e6d] hover:brightness-110"
+            [ngClass]="activeView() === 'ingresos' ? 'ring-2 ring-white/50' : ''"
+          >
+            <span class="text-xs sm:text-sm font-semibold text-white tracking-wide truncate pr-1">ingresar los ingresos</span>
+            <span class="w-4 h-full bg-[#f2a625] rounded-r-full shrink-0"></span>
+          </div>
+
+          <!-- 3. Agregar gasto -->
+          <div 
+            (click)="openAddExpenseModal()"
+            class="h-11 sm:h-12 rounded-full flex items-center justify-between pl-4 pr-0 cursor-pointer transition-all shadow-md overflow-hidden bg-gradient-to-r from-[#1a8881] to-[#285e6d] hover:brightness-110"
+          >
+            <span class="text-xs sm:text-sm font-semibold text-white tracking-wide">Agregar gasto</span>
+            <span class="w-4 h-full bg-[#f2a625] rounded-r-full shrink-0"></span>
+          </div>
+
+          <!-- 4. Historial de gastos -->
+          <div 
+            (click)="setView('history')"
+            class="h-11 sm:h-12 rounded-full flex items-center justify-between pl-4 pr-0 cursor-pointer transition-all shadow-md overflow-hidden bg-gradient-to-r from-[#1a8881] to-[#285e6d] hover:brightness-110"
             [ngClass]="activeView() === 'history' ? 'ring-2 ring-white/50' : ''"
           >
-            <span class="text-sm font-medium text-white tracking-wide">Historial de gastos</span>
-            <span class="w-3.5 h-full bg-[#f2a625] rounded-r-full shrink-0"></span>
+            <span class="text-xs sm:text-sm font-semibold text-white tracking-wide">Historial de gastos</span>
+            <span class="w-4 h-full bg-[#f2a625] rounded-r-full shrink-0"></span>
           </div>
-        </div>
 
-        <!-- 5. Reportes -->
-        <div class="flex items-center gap-3 group cursor-pointer" (click)="setView('reports')">
-          <div class="w-10 h-10 flex items-center justify-center shrink-0 bg-[#f2a625] rounded-xl shadow-md">
-            <svg class="w-5 h-5 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-            </svg>
-          </div>
+          <!-- 5. Reportes -->
           <div 
-            class="flex-1 h-10 rounded-full flex items-center justify-between pl-4 pr-0 transition-all shadow-md overflow-hidden bg-gradient-to-r from-[#1a8881] to-[#285e6d] hover:brightness-110"
+            (click)="setView('reports')"
+            class="h-11 sm:h-12 rounded-full flex items-center justify-between pl-4 pr-0 cursor-pointer transition-all shadow-md overflow-hidden bg-gradient-to-r from-[#1a8881] to-[#285e6d] hover:brightness-110"
             [ngClass]="activeView() === 'reports' ? 'ring-2 ring-white/50' : ''"
           >
-            <span class="text-sm font-medium text-white tracking-wide">Reportes</span>
-            <span class="w-3.5 h-full bg-[#f2a625] rounded-r-full shrink-0"></span>
+            <span class="text-xs sm:text-sm font-semibold text-white tracking-wide">Reportes</span>
+            <span class="w-4 h-full bg-[#f2a625] rounded-r-full shrink-0"></span>
           </div>
-        </div>
 
-        <!-- 6. Configuracion -->
-        <div class="flex items-center gap-3 group cursor-pointer" (click)="setView('config')">
-          <div class="w-10 h-10 flex items-center justify-center shrink-0 bg-[#f2a625] rounded-xl shadow-md">
-            <svg class="w-5 h-5 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-            </svg>
-          </div>
+          <!-- 6. Configuracion -->
           <div 
-            class="flex-1 h-10 rounded-full flex items-center justify-between pl-4 pr-0 transition-all shadow-md overflow-hidden bg-gradient-to-r from-[#1a8881] to-[#285e6d] hover:brightness-110"
+            (click)="setView('config')"
+            class="h-11 sm:h-12 rounded-full flex items-center justify-between pl-4 pr-0 cursor-pointer transition-all shadow-md overflow-hidden bg-gradient-to-r from-[#1a8881] to-[#285e6d] hover:brightness-110"
             [ngClass]="activeView() === 'config' ? 'ring-2 ring-white/50' : ''"
           >
-            <span class="text-sm font-medium text-white tracking-wide">Configuracion</span>
-            <span class="w-3.5 h-full bg-[#f2a625] rounded-r-full shrink-0"></span>
+            <span class="text-xs sm:text-sm font-semibold text-white tracking-wide">Configuracion</span>
+            <span class="w-4 h-full bg-[#f2a625] rounded-r-full shrink-0"></span>
           </div>
-        </div>
 
-      </nav>
+        </nav>
+
+      </div>
+
     </div>
 
-    <!-- BOTON CERRAR SESION - ancho reducido y centrado -->
-    <div class="pt-8 lg:pt-12 flex justify-center">
-      <button 
-        (click)="onLogout()"
-        class="w-[205px] h-10 bg-[#1a8881] rounded-full flex items-center pl-2.5 pr-0 shadow-lg shadow-black/20 transition-all active:scale-[0.98] group overflow-hidden"
-      >
-        <div class="flex-1 h-full bg-[#f2a625] hover:bg-[#e0951b] rounded-full flex items-center justify-between px-4 transition-colors">
-          <span class="text-xs sm:text-sm font-normal text-white tracking-wide">Cerrar sesion</span>
-          <svg class="w-4 h-4 text-[#2b2d33] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+    <!-- ======================================================== -->
+    <!-- BOTON CERRAR SESION: CÁPSULA NARANJA CON PESTAÑA VERDE IZQUIERDA Y PUERTA -->
+    <!-- ======================================================== -->
+    <div class="pt-6 lg:pt-8">
+      <div class="relative flex items-center w-full group cursor-pointer" (click)="onLogout()">
+        <!-- Pestaña verde/teal que asoma por la izquierda -->
+        <div class="absolute -left-1 top-0 bottom-0 w-8 bg-[#1a8881] rounded-l-full"></div>
+        <!-- Cápsula naranja principal -->
+        <button 
+          type="button"
+          class="relative z-10 w-full h-11 ml-2 bg-[#f2a625] hover:bg-[#e0951b] text-white rounded-full flex items-center justify-between px-5 shadow-lg shadow-black/20 transition-all active:scale-[0.98] overflow-hidden"
+        >
+          <span class="text-sm font-semibold tracking-wide flex-1 text-center pl-2">Cerrar sesion</span>
+          <!-- Icono de puerta saliendo -->
+          <svg class="w-5 h-5 text-[#2b2d33] shrink-0 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
           </svg>
-        </div>
-      </button>
+        </button>
+      </div>
     </div>
+
   </aside>
 
   <!-- ======================================================== -->
@@ -144,10 +187,9 @@
   <!-- ======================================================== -->
   <main class="flex-1 flex flex-col min-w-0 p-5 sm:p-7 lg:p-10 max-w-[1600px] mx-auto w-full">
 
-    <!-- TOP BAR: barra de busqueda a la izquierda, campana y avatar mas grandes a la derecha -->
+    <!-- TOP BAR (HEADER CON BUSCADOR NARANJA + PESTAÑA VERDE, NOTIFICACIONES Y AVATAR) -->
     <header class="w-full flex items-center justify-between gap-4 mb-6 relative">
       
-      <!-- Mobile hamburger toggle -->
       <button 
         (click)="toggleMobileSidebar()" 
         class="lg:hidden p-2 rounded-xl bg-[#1a8881] text-white hover:bg-[#285e6d] transition-colors"
@@ -157,24 +199,28 @@
         </svg>
       </button>
 
-      <!-- BUSCADOR NARANJA CON PESTAÑA TEAL A LA IZQUIERDA -->
+      <!-- ======================================================== -->
+      <!-- BUSCADOR CÁPSULA NARANJA CON PESTAÑA VERDE A LA IZQUIERDA -->
+      <!-- ======================================================== -->
       <div class="relative flex items-center">
-        <div class="h-10 bg-[#1a8881] rounded-full pl-2.5 pr-0 flex items-center shadow-md">
-          <div class="h-full w-44 sm:w-56 md:w-72 bg-[#f2a625] rounded-full flex items-center px-4 text-[#2b2d33] transition-all focus-within:ring-2 focus-within:ring-white/40">
-            <svg class="w-4 h-4 text-[#2b2d33] shrink-0 mr-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-            </svg>
-            <input 
-              type="text" 
-              placeholder="Search" 
-              [value]="searchControl()"
-              (input)="onSearch($event)"
-              class="w-full bg-transparent border-none text-sm font-normal text-[#2b2d33] placeholder-[#2b2d33]/80 focus:outline-none"
-            />
-            @if (searchControl()) {
-              <button (click)="searchControl.set(''); showSearchDropdown.set(false)" class="text-xs text-[#2b2d33]/80 hover:text-black ml-1 font-bold">✕</button>
-            }
-          </div>
+        <!-- Pestaña verde que asoma a la izquierda -->
+        <div class="absolute -left-2 top-0 bottom-0 w-8 bg-[#1a8881] rounded-l-full"></div>
+        
+        <!-- Cápsula naranja de búsqueda -->
+        <div class="relative z-10 w-48 sm:w-64 md:w-80 h-10 bg-[#f2a625] rounded-full flex items-center px-4 shadow-md text-[#2b2d33] transition-all focus-within:ring-2 focus-within:ring-white/50">
+          <svg class="w-4 h-4 text-[#2b2d33] shrink-0 mr-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+          </svg>
+          <input 
+            type="text" 
+            placeholder="Search" 
+            [value]="searchControl()"
+            (input)="onSearch($event)"
+            class="w-full bg-transparent border-none text-sm font-semibold text-[#2b2d33] placeholder-[#2b2d33]/70 focus:outline-none"
+          />
+          @if (searchControl()) {
+            <button (click)="searchControl.set(''); showSearchDropdown.set(false)" class="text-xs text-[#2b2d33]/80 hover:text-black ml-1 font-bold">✕</button>
+          }
         </div>
 
         <!-- DROPDOWN DE RESULTADOS EN TIEMPO REAL -->
@@ -211,21 +257,21 @@
         }
       </div>
 
-      <!-- CAMPANA + AVATAR (DERECHA - TAMAÑO MÁS GRANDE) -->
-      <div class="flex items-center gap-5 sm:gap-6 ml-auto relative">
-
-        <!-- BOTON CAMPANA NOTIFICACIONES (MÁS GRANDE CON BADGE CIRCULAR NARANJA) -->
-        <div class="relative flex items-center justify-center">
+      <!-- CAMPANA NOTIFICACIONES + AVATAR (GATO AZUL) -->
+      <div class="flex items-center gap-3.5 ml-auto relative">
+        
+        <!-- BOTON CAMPANA NOTIFICACIONES EN TIEMPO REAL -->
+        <div class="relative">
           <button 
             (click)="toggleNotifications()"
-            class="w-12 h-12 rounded-full flex items-center justify-center text-white hover:bg-white/10 transition-colors relative"
+            class="w-10 h-10 rounded-full flex items-center justify-center text-white hover:bg-white/10 transition-colors relative"
             title="Notificaciones en tiempo real"
           >
-            <svg class="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
             </svg>
             @if (unreadNotificationsCount() > 0) {
-              <span class="absolute top-0 right-0 min-w-[22px] h-[22px] px-1 rounded-full bg-[#f2a625] text-black font-extrabold text-xs flex items-center justify-center shadow-md">
+              <span class="absolute top-1.5 right-1.5 min-w-[18px] h-[18px] px-1 rounded-full bg-[#f2a625] text-[#2b2d33] font-bold text-[10px] flex items-center justify-center shadow">
                 {{ unreadNotificationsCount() }}
               </span>
             }
@@ -233,7 +279,7 @@
 
           <!-- DROPDOWN DE NOTIFICACIONES -->
           @if (showNotifications()) {
-            <div class="absolute right-0 top-14 w-80 sm:w-96 bg-[#124b60] border border-white/20 rounded-2xl shadow-2xl p-4 z-50 animate-fade-in max-h-96 flex flex-col">
+            <div class="absolute right-0 top-12 w-80 sm:w-96 bg-[#124b60] border border-white/20 rounded-2xl shadow-2xl p-4 z-50 animate-fade-in max-h-96 flex flex-col">
               <div class="flex items-center justify-between pb-3 border-b border-white/10 mb-2">
                 <span class="text-xs font-bold text-white uppercase tracking-wider">Notificaciones Recientes</span>
                 <button (click)="clearAllNotifications()" class="text-[10px] text-[#f2a625] hover:underline">
@@ -272,10 +318,10 @@
           }
         </div>
 
-        <!-- AVATAR CIRCULAR (MÁS GRANDE CON BORDE TEAL #38ada9) -->
+        <!-- AVATAR CIRCULAR (GATO CON FONDO AZUL) -->
         <div 
           (click)="openAvatarModal()"
-          class="w-14 h-14 sm:w-16 sm:h-16 rounded-full border-[3px] border-[#3eb5a4] overflow-hidden shadow-lg shrink-0 bg-[#1a8881] flex items-center justify-center text-white font-bold text-base cursor-pointer hover:scale-105 transition-all relative group"
+          class="w-10 h-10 rounded-full border-2 border-white/30 overflow-hidden shadow-md shrink-0 bg-[#0070ba] flex items-center justify-center text-white font-bold text-sm cursor-pointer hover:border-[#f2a625] hover:scale-105 transition-all relative group"
           title="Click para cambiar foto de perfil"
         >
           <img 
@@ -289,7 +335,7 @@
     </header>
 
     <!-- ======================================================== -->
-    <!-- VISTA: DASHBOARD PRINCIPAL -->
+    <!-- VISTA 1: DASHBOARD PRINCIPAL -->
     <!-- ======================================================== -->
     @if (activeView() === 'dashboard') {
 
@@ -311,7 +357,7 @@
             </div>
           </div>
           <div class="text-[11px] text-[#95b5bc] mt-3 flex items-center gap-1 font-medium">
-            <span>{{ finanzasService.resumen().porcentajeSaldoMes > 0 ? ('+' + finanzasService.resumen().porcentajeSaldoMes + '% este mes') : '0% este mes' }}</span>
+            <span>+24% este mes</span>
           </div>
         </div>
 
@@ -324,7 +370,7 @@
             </div>
           </div>
           <div class="text-[11px] text-[#95b5bc] mt-3 flex items-center gap-1 font-medium">
-            <span>{{ finanzasService.resumen().porcentajeAhorroMes > 0 ? ('+' + finanzasService.resumen().porcentajeAhorroMes + '% este mes') : '0% este mes' }}</span>
+            <span>+ 5.1 % este mes</span>
           </div>
         </div>
 
@@ -368,7 +414,6 @@
             <canvas #donutCanvas class="max-h-full max-w-full"></canvas>
           </div>
 
-          <!-- LEYENDA IDÉNTICA AL DISEÑO -->
           <div class="flex flex-col gap-1.5 mt-2 pl-2">
             <div class="flex items-center gap-2.5">
               <span class="w-2.5 h-2.5 rounded-full bg-[#0b3d4a] shrink-0"></span>
@@ -422,7 +467,302 @@
     }
 
     <!-- ======================================================== -->
-    <!-- VISTA: HISTORIAL COMPLETO DE GASTOS E INGRESOS -->
+    <!-- MÓDULO (GITHUB): VISTA OFICIAL 'INGRESAR LOS INGRESOS'    -->
+    <!-- Incluye: Detalles del salario (IVA 12%), Info Bancaria,   -->
+    <!-- Datos adicionales, Proyecciones Anuales y Gráfica Evolutiva-->
+    <!-- ======================================================== -->
+    @if (activeView() === 'ingresos') {
+      <div class="flex flex-col gap-5 animate-fade-in">
+        
+        @if (incomeConfigSuccess()) {
+          <div class="p-3.5 rounded-2xl bg-emerald-500/20 border border-emerald-500/50 text-emerald-200 text-xs flex items-center gap-2">
+            <svg class="w-4 h-4 text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            <span>{{ incomeConfigSuccess() }}</span>
+          </div>
+        }
+
+        <!-- GRID PRINCIPAL DE 2 COLUMNAS -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+
+          <!-- COLUMNA IZQUIERDA (FORMULARIOS / DATOS PRINCIPALES) - 7 COLS -->
+          <div class="lg:col-span-7 flex flex-col gap-5">
+            
+            <!-- TARJETA 1: DETALLES DEL SALARIO -->
+            <div class="bg-gradient-to-r from-[#1a8881] to-[#285e6d] rounded-2xl p-6 shadow-lg shadow-black/15 border border-white/5 flex flex-col gap-5">
+              
+              <div class="flex items-center gap-2.5 text-white">
+                <svg class="w-5 h-5 text-white shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+                </svg>
+                <h3 class="text-base font-bold tracking-wide">Detalles del salario</h3>
+              </div>
+
+              <form [formGroup]="incomeConfigForm" class="flex flex-col gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  
+                  <!-- AGREGAR INGRESO -->
+                  <div class="flex flex-col gap-1.5">
+                    <label class="text-[11px] font-bold text-[#95b5bc] uppercase tracking-wider">AGREGAR INGRESO</label>
+                    <div class="relative flex items-center">
+                      <span class="absolute left-3.5 text-sm font-semibold text-white/70">Q</span>
+                      <input 
+                        type="number" 
+                        step="0.01" 
+                        formControlName="montoIngreso" 
+                        placeholder="15,809.80"
+                        class="w-full h-11 rounded-xl pl-9 pr-3 text-sm font-bold bg-[#124b60]/60 border border-white/10 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-[#f2a625]"
+                      />
+                    </div>
+                  </div>
+
+                  <!-- PAGO POR HORA -->
+                  <div class="flex flex-col gap-1.5">
+                    <div class="flex items-center justify-between">
+                      <label class="text-[11px] font-bold text-[#95b5bc] uppercase tracking-wider">PAGO POR HORA</label>
+                    </div>
+                    <div class="relative flex items-center">
+                      <span class="absolute left-3.5 text-sm font-semibold text-white/70">Q</span>
+                      <input 
+                        type="text" 
+                        [value]="currentSueldoHora.toFixed(2)"
+                        readonly
+                        class="w-full h-11 rounded-xl pl-9 pr-3 text-sm font-bold bg-[#124b60]/40 border border-white/10 text-white select-none cursor-default"
+                      />
+                    </div>
+                    <span class="text-[10px] text-[#95b5bc]">40 horas/semanas</span>
+                  </div>
+
+                </div>
+
+                <!-- SUB-CARD: DESGLOSE DE IVA / IMPUESTOS -->
+                <div class="p-4 rounded-xl bg-[#124b60]/50 border border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 mt-1">
+                  <div>
+                    <span class="text-[10px] font-bold text-[#95b5bc] uppercase tracking-wider block">
+                      DESGLOSE DE IVA / IMPUESTOS (EST. 12%)
+                    </span>
+                    <span class="text-xs font-semibold text-[#28bed0]">Neto estimado!</span>
+                  </div>
+                  <div class="text-xl sm:text-2xl font-black text-white tracking-tight">
+                    {{ formatMoney(netoEstimado) }}
+                  </div>
+                </div>
+
+              </form>
+
+            </div>
+
+            <!-- TARJETA 2: INFORMACIÓN BANCARIA -->
+            <div class="bg-gradient-to-r from-[#1a8881] to-[#285e6d] rounded-2xl p-6 shadow-lg shadow-black/15 border border-white/5 flex flex-col gap-5">
+              
+              <div class="flex items-center gap-2.5 text-white">
+                <svg class="w-5 h-5 text-white shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"/>
+                </svg>
+                <h3 class="text-base font-bold tracking-wide">Información bancaria</h3>
+              </div>
+
+              <form [formGroup]="incomeConfigForm" class="flex flex-col gap-4">
+                
+                <!-- NOMBRE DEL BANCO -->
+                <div class="flex flex-col gap-1.5">
+                  <label class="text-[11px] font-bold text-[#95b5bc] uppercase tracking-wider">NOMBRE DEL BANCO</label>
+                  <select 
+                    formControlName="nombreBanco"
+                    class="w-full h-11 rounded-xl px-4 text-xs font-semibold bg-[#124b60]/60 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-[#f2a625]"
+                  >
+                    @for (b of bancosDisponibles; track b) {
+                      <option [value]="b" class="bg-[#124b60] text-white">{{ b }}</option>
+                    }
+                  </select>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <!-- NÚMERO DE CUENTA -->
+                  <div class="flex flex-col gap-1.5">
+                    <label class="text-[11px] font-bold text-[#95b5bc] uppercase tracking-wider">NÚMERO DE CUENTA (IBAN/CLABE)</label>
+                    <input 
+                      type="text" 
+                      formControlName="numeroCuenta" 
+                      placeholder="093-49291-01"
+                      class="w-full h-11 rounded-xl px-4 text-xs font-semibold bg-[#124b60]/60 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-[#f2a625]"
+                    />
+                  </div>
+
+                  <!-- TIPO DE CUENTA -->
+                  <div class="flex flex-col gap-1.5">
+                    <label class="text-[11px] font-bold text-[#95b5bc] uppercase tracking-wider">TIPO DE CUENTA</label>
+                    <select 
+                      formControlName="tipoCuenta"
+                      class="w-full h-11 rounded-xl px-4 text-xs font-semibold bg-[#124b60]/60 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-[#f2a625]"
+                    >
+                      <option value="Cuenta corriente" class="bg-[#124b60]">Cuenta corriente</option>
+                      <option value="Cuenta de ahorro" class="bg-[#124b60]">Cuenta de ahorro</option>
+                      <option value="Cuenta monetaria" class="bg-[#124b60]">Cuenta monetaria</option>
+                      <option value="Nómina" class="bg-[#124b60]">Nómina</option>
+                    </select>
+                  </div>
+                </div>
+
+              </form>
+
+            </div>
+
+            <!-- TARJETA 3: DATOS ADICIONALES -->
+            <div class="bg-gradient-to-r from-[#1a8881] to-[#285e6d] rounded-2xl p-6 shadow-lg shadow-black/15 border border-white/5 flex flex-col gap-5">
+              
+              <div class="flex items-center gap-2.5 text-white">
+                <svg class="w-5 h-5 text-white shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                <h3 class="text-base font-bold tracking-wide">Datos adicionales</h3>
+              </div>
+
+              <form [formGroup]="incomeConfigForm" class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                
+                <!-- TAX ID (NIT) -->
+                <div class="flex flex-col gap-1.5">
+                  <label class="text-[11px] font-bold text-[#95b5bc] uppercase tracking-wider">TAX ID (NIT)</label>
+                  <input 
+                    type="text" 
+                    formControlName="taxId" 
+                    placeholder="839218-K"
+                    class="w-full h-11 rounded-xl px-4 text-xs font-semibold bg-[#124b60]/60 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-[#f2a625]"
+                  />
+                </div>
+
+                <!-- FRECUENCIA DE PAGO -->
+                <div class="flex flex-col gap-1.5">
+                  <label class="text-[11px] font-bold text-[#95b5bc] uppercase tracking-wider">FRECUENCIA DE PAGO</label>
+                  <select 
+                    formControlName="frecuenciaPago"
+                    class="w-full h-11 rounded-xl px-3 text-xs font-semibold bg-[#124b60]/60 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-[#f2a625]"
+                  >
+                    <option value="Mensual" class="bg-[#124b60]">Mensual</option>
+                    <option value="Quincenal" class="bg-[#124b60]">Quincenal</option>
+                    <option value="Semanal" class="bg-[#124b60]">Semanal</option>
+                    <option value="Por proyecto" class="bg-[#124b60]">Por proyecto</option>
+                  </select>
+                </div>
+
+                <!-- CURRENCY -->
+                <div class="flex flex-col gap-1.5">
+                  <label class="text-[11px] font-bold text-[#95b5bc] uppercase tracking-wider">CURRENCY</label>
+                  <select 
+                    formControlName="currency"
+                    class="w-full h-11 rounded-xl px-3 text-xs font-semibold bg-[#124b60]/60 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-[#f2a625]"
+                  >
+                    <option value="GTQ (Q)" class="bg-[#124b60]">GTQ (Q)</option>
+                    <option value="USD ($)" class="bg-[#124b60]">USD ($)</option>
+                    <option value="EUR (€)" class="bg-[#124b60]">EUR (€)</option>
+                  </select>
+                </div>
+
+              </form>
+
+            </div>
+
+          </div>
+
+          <!-- COLUMNA DERECHA (WIDGETS Y TOTALES) - 5 COLS -->
+          <div class="lg:col-span-5 flex flex-col gap-5">
+            
+            <!-- TARJETA 1: TOTAL DE INGRESOS -->
+            <div class="bg-gradient-to-r from-[#1a8881] to-[#285e6d] rounded-2xl p-6 shadow-lg shadow-black/15 border border-white/5 flex flex-col gap-4">
+              
+              <h3 class="text-base font-bold text-white tracking-wide">Total de ingresos</h3>
+
+              <div class="flex flex-col gap-1">
+                <span class="text-[11px] font-bold text-[#95b5bc] uppercase tracking-wider">BRUTO ANUAL PROYECTADO</span>
+                <div class="text-xl sm:text-2xl font-black text-white tracking-tight">
+                  {{ formatMoney(brutoAnualProyectado) }}
+                </div>
+              </div>
+
+              <div class="pt-3 border-t border-white/10 flex items-center justify-between">
+                <span class="text-xs text-[#95b5bc]">Neto anual proyectado</span>
+                <span class="text-base sm:text-lg font-extrabold text-[#28bed0]">
+                  {{ formatMoney(netoAnualProyectado) }}
+                </span>
+              </div>
+
+            </div>
+
+            <!-- TARJETA 2: EVOLUCIÓN DE INGRESOS (ÚLTIMOS 6 MESES) -->
+            <div class="bg-gradient-to-r from-[#1a8881] to-[#285e6d] rounded-2xl p-6 shadow-lg shadow-black/15 border border-white/5 flex flex-col justify-between min-h-[220px]">
+              
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="text-base font-bold text-white tracking-wide">Evolución de ingresos</h3>
+                <span class="text-[10px] text-[#95b5bc]">Últimos 6 meses</span>
+              </div>
+
+              <!-- Canvas Área Chart -->
+              <div class="relative w-full h-[120px] my-auto">
+                <canvas #evolutionCanvas class="w-full h-full"></canvas>
+              </div>
+
+              <div class="text-[11px] text-[#28bed0] font-semibold mt-2 flex items-center gap-1">
+                <span>↗ +12.5% vs semestre anterior</span>
+              </div>
+
+            </div>
+
+            <!-- TARJETA 3: FUENTES DE INGRESOS -->
+            <div class="bg-gradient-to-r from-[#1a8881] to-[#285e6d] rounded-2xl p-6 shadow-lg shadow-black/15 border border-white/5 flex flex-col gap-4">
+              
+              <h3 class="text-base font-bold text-white tracking-wide">Fuentes de ingresos</h3>
+
+              <div class="flex flex-col gap-3.5">
+                @for (fuente of fuentesIngresoBreakdown(); track fuente.nombre) {
+                  <div class="flex flex-col gap-1.5">
+                    <div class="flex items-center justify-between text-xs font-semibold text-white">
+                      <div class="flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-[#124b60] shrink-0"></span>
+                        <span>{{ fuente.nombre }}</span>
+                      </div>
+                      <span class="text-[#95b5bc]">{{ fuente.porcentaje }}%</span>
+                    </div>
+                    <div class="w-full h-1.5 bg-[#124b60]/80 rounded-full overflow-hidden">
+                      <div 
+                        class="h-full rounded-full bg-gradient-to-r from-[#28bed0] to-[#f2a625]" 
+                        [style.width.%]="fuente.porcentaje"
+                      ></div>
+                    </div>
+                  </div>
+                }
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- BOTON DE ACCION INFERIOR: GUARDAR (ESTILO IDÉNTICO A CERRAR SESION) -->
+        <div class="flex justify-end pt-3">
+          <div class="relative flex items-center group cursor-pointer" (click)="saveIncomeConfiguration()">
+            <!-- Pestaña verde/teal que asoma por la izquierda -->
+            <div class="absolute -left-1 top-0 bottom-0 w-8 bg-[#1a8881] rounded-l-full"></div>
+            <!-- Cápsula naranja principal -->
+            <button 
+              type="button"
+              [disabled]="incomeConfigSubmitting()"
+              class="relative z-10 h-11 ml-2 px-8 bg-[#f2a625] hover:bg-[#e0951b] text-[#2b2d33] font-bold text-sm rounded-full flex items-center justify-between gap-3 shadow-lg shadow-black/20 transition-all active:scale-[0.98] disabled:opacity-50 overflow-hidden"
+            >
+              <svg class="w-5 h-5 text-[#2b2d33] shrink-0 group-hover:translate-y-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M12 4v10m0 0l-3-3m3 3l3-3" />
+              </svg>
+              <span class="text-sm font-bold tracking-wide">
+                {{ incomeConfigSubmitting() ? 'Guardando...' : 'Guardar' }}
+              </span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    }
+
+    <!-- ======================================================== -->
+    <!-- VISTA 3: HISTORIAL COMPLETO DE GASTOS E INGRESOS -->
     <!-- ======================================================== -->
     @if (activeView() === 'history') {
       <div class="bg-gradient-to-r from-[#1a8881] to-[#285e6d] rounded-2xl p-6 shadow-lg shadow-black/15 border border-white/5 flex flex-col gap-6">
@@ -457,7 +797,7 @@
               <option value="salario">Salario</option>
             </select>
 
-            <button (click)="openAddIncomeModal()" class="px-4 py-2 rounded-full bg-[#1ea6b6] hover:bg-[#28bed0] text-xs font-semibold text-white transition-all shadow-md">
+            <button (click)="setView('ingresos')" class="px-4 py-2 rounded-full bg-[#1ea6b6] hover:bg-[#28bed0] text-xs font-semibold text-white transition-all shadow-md">
               + Nuevo Ingreso
             </button>
             <button (click)="openAddExpenseModal()" class="px-4 py-2 rounded-full bg-[#f2a625] hover:bg-[#e0951b] text-xs font-semibold text-white transition-all shadow-md">
@@ -535,7 +875,7 @@
     }
 
     <!-- ======================================================== -->
-    <!-- VISTA: REPORTES -->
+    <!-- VISTA 4: REPORTES -->
     <!-- ======================================================== -->
     @if (activeView() === 'reports') {
       <div class="bg-gradient-to-r from-[#1a8881] to-[#285e6d] rounded-2xl p-6 sm:p-8 shadow-lg shadow-black/15 border border-white/5 flex flex-col gap-6">
@@ -592,7 +932,7 @@
     }
 
     <!-- ======================================================== -->
-    <!-- VISTA: CONFIGURACIÓN -->
+    <!-- VISTA 5: CONFIGURACIÓN -->
     <!-- ======================================================== -->
     @if (activeView() === 'config') {
       <div class="bg-gradient-to-r from-[#1a8881] to-[#285e6d] rounded-2xl p-6 sm:p-8 shadow-lg shadow-black/15 border border-white/5 flex flex-col gap-6 max-w-3xl">
@@ -708,7 +1048,7 @@
   }
 
   <!-- ======================================================== -->
-  <!-- MODAL: INGRESAR / EDITAR INGRESO -->
+  <!-- MODAL: AGREGAR / EDITAR INGRESO (DESDE EL HISTORIAL) -->
   <!-- ======================================================== -->
   @if (showIncomeModal()) {
     <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
@@ -716,7 +1056,7 @@
         
         <div class="flex items-center justify-between pb-4 border-b border-white/10 mb-5">
           <h3 class="text-xl font-bold text-white">
-            {{ editingItem() ? 'Editar Ingreso' : 'Ingresar los Ingresos' }}
+            {{ editingItem() ? 'Editar Ingreso' : 'Registrar Ingreso' }}
           </h3>
           <button (click)="closeModals()" class="text-white/60 hover:text-white text-xl">✕</button>
         </div>

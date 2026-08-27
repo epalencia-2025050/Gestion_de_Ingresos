@@ -1,3 +1,9 @@
+/**
+ * ============================================================================
+ * CONTROLADOR: GESTIÓN DE INGRESOS (GITHUB COMMIT)
+ * Endpoints RESTful para la creación, consulta, edición y eliminación de ingresos.
+ * ============================================================================
+ */
 import { Request, Response } from 'express';
 import { ingresoService } from '../services/ingreso.service';
 

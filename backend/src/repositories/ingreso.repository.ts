@@ -1,3 +1,9 @@
+/**
+ * ============================================================================
+ * REPOSITORIO: ACCESO A BASE DE DATOS PARA INGRESOS (GITHUB COMMIT)
+ * Consultas SQL parametrizadas a PostgreSQL para la tabla ingresos con aislamiento por usuario.
+ * ============================================================================
+ */
 import { pool } from '../config/database';
 import { CreateIngresoDto, IngresoEntity, UpdateIngresoDto } from '../models/ingreso.model';
 

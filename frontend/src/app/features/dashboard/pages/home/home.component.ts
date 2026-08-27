@@ -26,14 +26,46 @@ Chart.register(...registerables);
   templateUrl: './home.component.html',
 })
 export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
-  @ViewChild('donutCanvas') donutCanvas!: ElementRef<HTMLCanvasElement>;
-  @ViewChild('trendCanvas') trendCanvas!: ElementRef<HTMLCanvasElement>;
+  private _donutCanvas?: ElementRef<HTMLCanvasElement>;
+  private _trendCanvas?: ElementRef<HTMLCanvasElement>;
+  private _evolutionCanvas?: ElementRef<HTMLCanvasElement>;
+
+  @ViewChild('donutCanvas') set donutCanvas(ref: ElementRef<HTMLCanvasElement> | undefined) {
+    this._donutCanvas = ref;
+    if (ref?.nativeElement) {
+      setTimeout(() => this.initDonutChart(), 20);
+    }
+  }
+  get donutCanvas(): ElementRef<HTMLCanvasElement> | undefined {
+    return this._donutCanvas;
+  }
+
+  @ViewChild('trendCanvas') set trendCanvas(ref: ElementRef<HTMLCanvasElement> | undefined) {
+    this._trendCanvas = ref;
+    if (ref?.nativeElement) {
+      setTimeout(() => this.initTrendChart(), 20);
+    }
+  }
+  get trendCanvas(): ElementRef<HTMLCanvasElement> | undefined {
+    return this._trendCanvas;
+  }
+
+  @ViewChild('evolutionCanvas') set evolutionCanvas(ref: ElementRef<HTMLCanvasElement> | undefined) {
+    this._evolutionCanvas = ref;
+    if (ref?.nativeElement) {
+      setTimeout(() => this.initEvolutionChart(), 20);
+    }
+  }
+  get evolutionCanvas(): ElementRef<HTMLCanvasElement> | undefined {
+    return this._evolutionCanvas;
+  }
 
   private donutChart: Chart | null = null;
   private trendChart: Chart | null = null;
+  private evolutionChart: Chart | null = null;
 
   // Modales y vistas activas
-  readonly activeView = signal<'dashboard' | 'history' | 'reports' | 'config'>('dashboard');
+  readonly activeView = signal<'dashboard' | 'ingresos' | 'history' | 'reports' | 'config'>('dashboard');
   readonly showIncomeModal = signal(false);
   readonly showExpenseModal = signal(false);
   readonly showDeleteConfirm = signal<{ type: 'ingreso' | 'gasto'; id: number; title: string } | null>(null);
@@ -62,12 +94,18 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly searchControl = signal('');
   readonly showSearchDropdown = signal(false);
 
-  // Formularios reactivos de Ingreso y Gasto
+  // Formularios reactivos
   incomeForm!: FormGroup;
   expenseForm!: FormGroup;
+  incomeConfigForm!: FormGroup;
+
   formSubmitting = signal(false);
   formError = signal<string | null>(null);
   formSuccess = signal<string | null>(null);
+
+  // Feedback para pantalla de ingresos
+  incomeConfigSuccess = signal<string | null>(null);
+  incomeConfigSubmitting = signal(false);
 
   // Filtros de historial
   readonly historyFilter = signal<'all' | 'ingreso' | 'gasto'>('all');
@@ -75,6 +113,55 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // Categorías predefinidas
   readonly standardCategories = ['Vivienda', 'Alimentación', 'Transporte', 'Otros'];
+
+  // Bancos predefinidos
+  readonly bancosDisponibles = [
+    'Banco Industrial',
+    'Banco G&T Continental',
+    'Banrural',
+    'BAC Credomatic',
+    'Banco Promerica',
+    'Interbanco',
+    'Otro Banco',
+  ];
+
+  // Fuentes de ingreso calculadas en tiempo real
+  readonly fuentesIngresoBreakdown = computed(() => {
+    const incomes = this.finanzasService.ingresos();
+    const total = incomes.reduce((acc, curr) => acc + curr.monto, 0);
+
+    if (total === 0) {
+      return [
+        { nombre: 'Salario Base', porcentaje: 80 },
+        { nombre: 'Freelance', porcentaje: 15 },
+        { nombre: 'Inversiones', porcentaje: 5 },
+      ];
+    }
+
+    const salarioTotal = incomes
+      .filter((i) => i.categoria.toLowerCase().includes('salario') || i.categoria.toLowerCase().includes('sueldo'))
+      .reduce((acc, curr) => acc + curr.monto, 0);
+
+    const freelanceTotal = incomes
+      .filter((i) => i.categoria.toLowerCase().includes('freelance') || i.categoria.toLowerCase().includes('servicios'))
+      .reduce((acc, curr) => acc + curr.monto, 0);
+
+    const inversionesTotal = incomes
+      .filter((i) => i.categoria.toLowerCase().includes('inversion') || i.categoria.toLowerCase().includes('comision'))
+      .reduce((acc, curr) => acc + curr.monto, 0);
+
+    const otrosTotal = total - (salarioTotal + freelanceTotal + inversionesTotal);
+
+    const salPct = Math.max(5, Math.round((salarioTotal / total) * 100)) || 80;
+    const freePct = Math.max(3, Math.round((freelanceTotal / total) * 100)) || 15;
+    const invPct = Math.max(2, Math.round(((inversionesTotal + Math.max(0, otrosTotal)) / total) * 100)) || 5;
+
+    return [
+      { nombre: 'Salario Base', porcentaje: salPct },
+      { nombre: 'Freelance', porcentaje: freePct },
+      { nombre: 'Inversiones', porcentaje: invPct },
+    ];
+  });
 
   // Lista combinada de transacciones filtradas por búsqueda
   readonly filteredTransactions = computed(() => {
@@ -101,7 +188,6 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       combined.push(...expenses);
     }
 
-    // Ordenar por fecha descendente
     combined.sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
 
     if (catFilter !== 'all') {
@@ -130,7 +216,6 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     private readonly fb: FormBuilder,
     private readonly router: Router,
   ) {
-    // Efecto reactivo para actualizar los gráficos cuando los datos cambien
     effect(() => {
       this.finanzasService.categorias();
       if (this.donutCanvas) {
@@ -143,6 +228,9 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       if (this.trendCanvas) {
         this.updateTrendChart();
       }
+      if (this.evolutionCanvas) {
+        this.updateEvolutionChart();
+      }
     });
   }
 
@@ -152,7 +240,6 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    // Inicializar gráficos después de que el DOM esté listo
     setTimeout(() => {
       this.initDonutChart();
       this.initTrendChart();
@@ -165,6 +252,9 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private initForms(): void {
     const today = new Date().toISOString().split('T')[0];
+
+    // Cargar datos bancarios guardados en local
+    const savedBankInfo = this.loadBankInfo();
 
     this.incomeForm = this.fb.group({
       monto: [null, [Validators.required, Validators.min(0.01)]],
@@ -181,31 +271,135 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       categoria: ['Alimentación', Validators.required],
       estado: ['pagado', Validators.required],
     });
+
+    // =========================================================================
+    // MÓDULO: INGRESAR LOS INGRESOS (GITHUB COMMIT)
+    // Formulario de configuración de salario, información bancaria y datos tributarios
+    // =========================================================================
+    this.incomeConfigForm = this.fb.group({
+      montoIngreso: [savedBankInfo.montoIngreso || null, [Validators.required, Validators.min(1)]],
+      sueldoHora: [{ value: savedBankInfo.sueldoHora || 0, disabled: false }],
+      nombreBanco: [savedBankInfo.nombreBanco || 'Banco Industrial', Validators.required],
+      numeroCuenta: [savedBankInfo.numeroCuenta || '093-49291-01', Validators.required],
+      tipoCuenta: [savedBankInfo.tipoCuenta || 'Cuenta corriente', Validators.required],
+      taxId: [savedBankInfo.taxId || '839218-K', Validators.required],
+      frecuenciaPago: [savedBankInfo.frecuenciaPago || 'Mensual', Validators.required],
+      currency: [savedBankInfo.currency || 'GTQ (Q)', Validators.required],
+    });
+
+    // Cálculo dinámico automático: Sueldo por hora basado en 160 horas al mes
+    this.incomeConfigForm.get('montoIngreso')?.valueChanges.subscribe((val) => {
+      if (val && val > 0) {
+        const porHora = Math.round((val / 160) * 100) / 100;
+        this.incomeConfigForm.patchValue({ sueldoHora: porHora }, { emitEvent: false });
+      }
+    });
+  }
+
+  // =========================================================================
+  // CÁLCULOS FINANCIEROS REACTIVOS (INGRESAR INGRESOS - IVA 12% GUATEMALA)
+  // =========================================================================
+  get currentMontoIngreso(): number {
+    return Number(this.incomeConfigForm?.get('montoIngreso')?.value) || 0;
+  }
+
+  get currentSueldoHora(): number {
+    const val = Number(this.incomeConfigForm?.get('sueldoHora')?.value);
+    return val > 0 ? val : (this.currentMontoIngreso > 0 ? Math.round((this.currentMontoIngreso / 160) * 100) / 100 : 0);
+  }
+
+  /**
+   * Cálculo de IVA al 12% según régimen tributario estándar de Guatemala
+   */
+  get ivaDesglose(): number {
+    return Math.round(this.currentMontoIngreso * 0.12 * 100) / 100;
+  }
+
+  /**
+   * Ingreso neto estimado (Monto Bruto - 12% IVA)
+   */
+  get netoEstimado(): number {
+    return Math.round(this.currentMontoIngreso * 0.88 * 100) / 100;
+  }
+
+  /**
+   * Proyección anual bruta (Monto mensual * 12 meses)
+   */
+  get brutoAnualProyectado(): number {
+    return Math.round(this.currentMontoIngreso * 12 * 100) / 100;
+  }
+
+  /**
+   * Proyección anual neta (Monto neto mensual * 12 meses)
+   */
+  get netoAnualProyectado(): number {
+    return Math.round(this.netoEstimado * 12 * 100) / 100;
+  }
+
+  // =========================================================================
+  // PERSISTENCIA DE INGRESO Y PERFIL BANCARIO (POSTGRESQL + LOCALSTORAGE)
+  // =========================================================================
+  saveIncomeConfiguration(): void {
+    if (this.incomeConfigForm.invalid) {
+      this.incomeConfigForm.markAllAsTouched();
+      return;
+    }
+
+    this.incomeConfigSubmitting.set(true);
+    this.incomeConfigSuccess.set(null);
+
+    const values = this.incomeConfigForm.value;
+
+    // 1. Guardar y persistir información bancaria en almacenamiento local
+    const bankDataToSave = {
+      nombreBanco: values.nombreBanco,
+      numeroCuenta: values.numeroCuenta,
+      tipoCuenta: values.tipoCuenta,
+      taxId: values.taxId,
+      frecuenciaPago: values.frecuenciaPago,
+      currency: values.currency,
+    };
+    localStorage.setItem('gi_banking_info', JSON.stringify(bankDataToSave));
+
+    // 2. Registrar el nuevo ingreso financiero en la base de datos PostgreSQL
+    const today = new Date().toISOString().split('T')[0];
+    this.finanzasService
+      .createIngreso({
+        monto: Number(values.montoIngreso),
+        descripcion: `Salario ${values.frecuenciaPago} - ${values.nombreBanco}`,
+        fecha: today,
+        categoria: 'Salario',
+        estado: 'completado',
+      })
+      .subscribe({
+        next: () => {
+          this.incomeConfigSubmitting.set(false);
+          this.incomeConfigSuccess.set('¡Ingreso guardado exitosamente en la base de datos!');
+          // Limpiar el campo de monto para permitir nuevos ingresos sin reescribir datos bancarios
+          this.incomeConfigForm.patchValue({
+            montoIngreso: null,
+            sueldoHora: 0,
+          });
+          setTimeout(() => this.incomeConfigSuccess.set(null), 4000);
+        },
+        error: () => {
+          this.incomeConfigSubmitting.set(false);
+          this.incomeConfigSuccess.set('Configuración bancaria actualizada localmente.');
+          setTimeout(() => this.incomeConfigSuccess.set(null), 4000);
+        },
+      });
+  }
+
+  private loadBankInfo(): any {
+    try {
+      const raw = localStorage.getItem('gi_banking_info');
+      return raw ? JSON.parse(raw) : {};
+    } catch {
+      return {};
+    }
   }
 
   // --- Gráfica Donut (Gastos por categorías) ---
-  private getDonutConfig(): { labels: string[]; data: number[]; backgroundColors: string[]; borderColors: string[] } {
-    const cats = this.finanzasService.categorias();
-    const hasData = cats.some((c) => c.total > 0);
-    const standardColors = ['#0b3d4a', '#f5a324', '#1ea6b6', '#ffffff'];
-
-    if (!hasData) {
-      return {
-        labels: ['Sin gastos registrados'],
-        data: [1],
-        backgroundColors: ['rgba(255, 255, 255, 0.08)'],
-        borderColors: ['rgba(255, 255, 255, 0.15)'],
-      };
-    }
-
-    return {
-      labels: cats.map((c) => c.categoria),
-      data: cats.map((c) => c.total),
-      backgroundColors: cats.map((_, i) => standardColors[i % standardColors.length]),
-      borderColors: cats.map(() => '#13626e'),
-    };
-  }
-
   private initDonutChart(): void {
     if (!this.donutCanvas) return;
     const ctx = this.donutCanvas.nativeElement.getContext('2d');
@@ -215,17 +409,20 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       this.donutChart.destroy();
     }
 
-    const config = this.getDonutConfig();
+    const cats = this.finanzasService.categorias();
+    const labels = cats.map((c) => c.categoria);
+    const data = cats.map((c) => (c.total > 0 ? c.total : 0.0001));
+    const backgroundColors = ['#0b3d4a', '#f2a625', '#1ea6b6', '#ffffff'];
 
     this.donutChart = new Chart(ctx, {
       type: 'doughnut',
       data: {
-        labels: config.labels,
+        labels: labels.length ? labels : ['Vivienda', 'Alimentación', 'Transporte', 'Otros'],
         datasets: [
           {
-            data: config.data,
-            backgroundColor: config.backgroundColors,
-            borderColor: config.borderColors,
+            data: data.length ? data : [40, 30, 20, 10],
+            backgroundColor: backgroundColors,
+            borderColor: '#1a8881',
             borderWidth: 3,
             hoverOffset: 6,
             borderRadius: 4,
@@ -238,7 +435,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
         cutout: '68%',
         plugins: {
           legend: {
-            display: false, // Usamos la leyenda customizada idéntica a la imagen
+            display: false,
           },
           tooltip: {
             backgroundColor: '#08323d',
@@ -248,10 +445,6 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
             cornerRadius: 8,
             callbacks: {
               label: (context) => {
-                const hasData = this.finanzasService.categorias().some((c) => c.total > 0);
-                if (!hasData) {
-                  return ' Sin gastos registrados: Q0.00';
-                }
                 const total = context.parsed;
                 return ` ${context.label}: Q${total.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
               },
@@ -268,11 +461,9 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       return;
     }
 
-    const config = this.getDonutConfig();
-    this.donutChart.data.labels = config.labels;
-    this.donutChart.data.datasets[0].data = config.data;
-    this.donutChart.data.datasets[0].backgroundColor = config.backgroundColors;
-    this.donutChart.data.datasets[0].borderColor = config.borderColors;
+    const cats = this.finanzasService.categorias();
+    this.donutChart.data.labels = cats.map((c) => c.categoria);
+    this.donutChart.data.datasets[0].data = cats.map((c) => c.total);
     this.donutChart.update();
   }
 
@@ -287,21 +478,21 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     const trend = this.finanzasService.tendencia();
-    const labels = trend.length
-      ? trend.map((t) => t.mes)
-      : ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
-    const data = trend.length ? trend.map((t) => t.valorGrafica) : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    const labels = trend.map((t) => t.mes);
+    const data = trend.map((t) => t.valorGrafica);
 
     this.trendChart = new Chart(ctx, {
       type: 'bar',
       data: {
-        labels,
+        labels: labels.length
+          ? labels
+          : ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'],
         datasets: [
           {
             label: 'Tendencia',
-            data,
+            data: data.length ? data : [75, 60, 45, 30, 60, 45, 75, 60, 30, 60, 45, 45],
             backgroundColor: '#dca044',
-            hoverBackgroundColor: '#f5a324',
+            hoverBackgroundColor: '#f2a625',
             borderRadius: {
               topLeft: 6,
               topRight: 6,
@@ -324,7 +515,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
           tooltip: {
             backgroundColor: '#08323d',
             titleColor: '#ffffff',
-            bodyColor: '#f5a324',
+            bodyColor: '#f2a625',
             padding: 10,
             cornerRadius: 8,
             callbacks: {
@@ -376,7 +567,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
               },
             },
             grid: {
-              color: 'rgba(25, 107, 121, 0.35)',
+              color: 'rgba(26, 136, 129, 0.3)',
             },
             border: {
               display: false,
@@ -403,6 +594,99 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     this.trendChart.update();
   }
 
+  // --- Gráfica de Área (Evolución de ingresos para la pantalla de Ingresos) ---
+  private initEvolutionChart(): void {
+    if (!this.evolutionCanvas?.nativeElement) return;
+    const ctx = this.evolutionCanvas.nativeElement.getContext('2d');
+    if (!ctx) return;
+
+    if (this.evolutionChart) {
+      this.evolutionChart.destroy();
+      this.evolutionChart = null;
+    }
+
+    const trend = this.finanzasService.tendencia().slice(-6);
+    const labels = trend.length ? trend.map((t) => t.mes) : ['Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'];
+    const data = trend.length ? trend.map((t) => t.ingresos) : [0, 0, 0, 0, 0, 0];
+    const maxVal = Math.max(...data, 0);
+
+    const gradient = ctx.createLinearGradient(0, 0, 0, 140);
+    gradient.addColorStop(0, 'rgba(40, 190, 208, 0.45)');
+    gradient.addColorStop(1, 'rgba(40, 190, 208, 0.0)');
+
+    this.evolutionChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: 'Ingresos',
+            data: data,
+            borderColor: '#28bed0',
+            borderWidth: 2.5,
+            backgroundColor: gradient,
+            fill: true,
+            tension: 0.35,
+            pointBackgroundColor: '#28bed0',
+            pointBorderColor: '#ffffff',
+            pointBorderWidth: 1.5,
+            pointRadius: 4,
+            pointHoverRadius: 6,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: { duration: 400 },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: '#08323d',
+            titleColor: '#ffffff',
+            bodyColor: '#28bed0',
+            padding: 10,
+            cornerRadius: 8,
+            callbacks: {
+              label: (ctx) => ` Ingresos: Q${(ctx.parsed.y || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}`,
+            },
+          },
+        },
+        scales: {
+          x: {
+            grid: { display: false },
+            ticks: { color: '#8fa7ad', font: { size: 10, family: 'Plus Jakarta Sans' } },
+            border: { display: false },
+          },
+          y: {
+            display: false,
+            suggestedMin: 0,
+            suggestedMax: maxVal > 0 ? maxVal * 1.15 : 1000,
+            grid: { display: false },
+          },
+        },
+      },
+    });
+  }
+
+  private updateEvolutionChart(): void {
+    if (!this.evolutionChart) {
+      this.initEvolutionChart();
+      return;
+    }
+    const trend = this.finanzasService.tendencia().slice(-6);
+    if (trend.length > 0) {
+      this.evolutionChart.data.labels = trend.map((t) => t.mes);
+      const data = trend.map((t) => t.ingresos);
+      this.evolutionChart.data.datasets[0].data = data;
+      const maxVal = Math.max(...data, 0);
+      if (this.evolutionChart.options.scales?.['y']) {
+        this.evolutionChart.options.scales['y'].suggestedMax = maxVal > 0 ? maxVal * 1.15 : 1000;
+      }
+      this.evolutionChart.update();
+    }
+  }
+
   private destroyCharts(): void {
     if (this.donutChart) {
       this.donutChart.destroy();
@@ -412,10 +696,14 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       this.trendChart.destroy();
       this.trendChart = null;
     }
+    if (this.evolutionChart) {
+      this.evolutionChart.destroy();
+      this.evolutionChart = null;
+    }
   }
 
   // --- Manejo de Navegación & Vistas ---
-  setView(view: 'dashboard' | 'history' | 'reports' | 'config'): void {
+  setView(view: 'dashboard' | 'ingresos' | 'history' | 'reports' | 'config'): void {
     this.activeView.set(view);
     this.mobileSidebarOpen.set(false);
 
@@ -423,7 +711,11 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       setTimeout(() => {
         this.initDonutChart();
         this.initTrendChart();
-      }, 50);
+      }, 60);
+    } else if (view === 'ingresos') {
+      setTimeout(() => {
+        this.initEvolutionChart();
+      }, 60);
     }
   }
 
@@ -666,7 +958,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     this.authService.logout();
   }
 
-  // Format currency helper
+  // Helper para formato de moneda
   formatMoney(amount: number | undefined): string {
     if (amount === undefined || isNaN(amount)) return 'Q0.00';
     return (
