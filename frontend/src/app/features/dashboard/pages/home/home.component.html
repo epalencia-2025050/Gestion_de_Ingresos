@@ -27,97 +27,66 @@
       </div>
 
       <!-- ======================================================== -->
+      <!-- ======================================================== -->
       <!-- MENU DE NAVEGACION: COLUMNA VERTICAL NARANJA DE ICONOS + BOTONES PÍLDORA -->
       <!-- ======================================================== -->
       <div class="flex items-stretch gap-2.5 mt-1">
         
-        <!-- TIRA VERTICAL NARANJA CONTINUA CON LOS 6 ICONOS -->
-        <div class="w-12 sm:w-13 bg-[#f2a625] rounded-full py-3 px-1.5 flex flex-col justify-between items-center shadow-lg shadow-black/20 shrink-0">
+        <!-- TIRA VERTICAL NARANJA CONTINUA CON LOS 6 ICONOS (MÁS GRANDE Y PROMINENTE) -->
+        <div class="w-14 sm:w-16 bg-[#f2a625] rounded-full py-3.5 px-2 flex flex-col justify-between items-center shadow-lg shadow-black/20 shrink-0">
           
-          <!-- 1. Icono Menu (Documento con gráfico ascendente y lupa con check) -->
+          <!-- 1. Icono Menu -->
           <button 
             (click)="setView('dashboard')" 
             title="Menu"
-            class="w-9 h-10 flex items-center justify-center text-[#124b60] hover:scale-110 transition-transform"
+            class="w-10 sm:w-11 h-11 sm:h-12 flex items-center justify-center hover:scale-110 transition-transform overflow-hidden"
           >
-            <svg class="w-6 h-6 stroke-[#124b60]" fill="none" viewBox="0 0 24 24" stroke-width="1.8">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M6 3h8l4 4v13a1 1 0 01-1 1H6a1 1 0 01-1-1V4a1 1 0 011-1z" />
-              <path stroke-linecap="round" stroke-linejoin="round" d="M8 12.5l2.2-2.5 2.2 2 2.6-3m-1.5 0h1.5v1.5" />
-              <path stroke-linecap="round" d="M8 16h4.5m-4.5 2.5h3.5" />
-              <circle cx="16.5" cy="16.5" r="3.2" class="fill-[#f2a625] stroke-[#124b60]" />
-              <path stroke-linecap="round" stroke-linejoin="round" d="M15.3 16.5l.8.8 1.6-1.6" />
-              <path stroke-linecap="round" d="M18.8 18.8L21.5 21.5" />
-            </svg>
+            <img src="assets/icons/icon-menu.png" alt="Menu" class="w-7 h-7 sm:w-7.5 sm:h-7.5 object-contain" />
           </button>
 
-          <!-- 2. Icono Ingresar los ingresos (Banco clásico con $ en tímpano y 4 columnas) -->
+          <!-- 2. Icono Ingresar los ingresos -->
           <button 
             (click)="setView('ingresos')" 
             title="Ingresar los ingresos"
-            class="w-9 h-10 flex items-center justify-center text-[#124b60] hover:scale-110 transition-transform"
+            class="w-10 sm:w-11 h-11 sm:h-12 flex items-center justify-center hover:scale-110 transition-transform overflow-hidden"
           >
-            <svg class="w-6 h-6 stroke-[#124b60]" fill="none" viewBox="0 0 24 24" stroke-width="1.8">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 2.5L2 7.5h20L12 2.5z" />
-              <text x="12" y="6.8" font-size="4" font-weight="bold" text-anchor="middle" fill="#124b60" stroke="none">$</text>
-              <path stroke-linecap="round" stroke-linejoin="round" d="M3 7.5h18m-17 11h16M2 21.5h20" />
-              <path stroke-linecap="round" d="M5.5 8.5v10m4.3-10v10m4.4-10v10m4.3-10v10" stroke-width="2" />
-            </svg>
+            <img src="assets/icons/icon-ingresos.png" alt="Ingresar ingresos" class="w-7 h-7 sm:w-7.5 sm:h-7.5 object-contain" />
           </button>
 
-          <!-- 3. Icono Agregar gasto (Cerdito con moneda $ arriba) -->
+          <!-- 3. Icono Agregar gasto (Compensado por margen del PNG) -->
           <button 
             (click)="openAddExpenseModal()" 
             title="Agregar gasto"
-            class="w-9 h-10 flex items-center justify-center text-[#124b60] hover:scale-110 transition-transform"
+            class="w-10 sm:w-11 h-11 sm:h-12 flex items-center justify-center hover:scale-110 transition-transform overflow-hidden"
           >
-            <svg class="w-6 h-6 stroke-[#124b60]" fill="none" viewBox="0 0 24 24" stroke-width="1.8">
-              <circle cx="15.5" cy="5.2" r="2.6" class="fill-[#f2a625] stroke-[#124b60]" />
-              <text x="15.5" y="6.5" font-size="3.5" font-weight="bold" text-anchor="middle" fill="#124b60" stroke="none">$</text>
-              <path stroke-linecap="round" stroke-linejoin="round" d="M17.5 9.8c0-3.3-2.8-5.8-6.5-5.8-3.6 0-6.5 2.5-6.5 5.8 0 1.2.4 2.2 1.2 3L5 14.5H3.5V17h2l.7 2.5h2.8l.7-2h3.6l.7 2h2.8l.7-2.5h1V14.5h-1c1.2-.9 1.8-2.2 1.8-3.8 0-.3 0-.6-.1-.9z" />
-              <path stroke-linecap="round" d="M8.2 9.2a1 1 0 011.2-.4M18 12c.8-.5 1.5-.2 1.5.5" />
-            </svg>
+            <img src="assets/icons/icon-gastos.png" alt="Agregar gasto" class="w-9 h-9 sm:w-10 sm:h-10 scale-125 object-contain" />
           </button>
 
-          <!-- 4. Icono Historial de gastos (Documento ondulado con gráfica y recibo con $) -->
+          <!-- 4. Icono Historial de gastos (Compensado por margen del PNG) -->
           <button 
             (click)="setView('history')" 
             title="Historial de gastos"
-            class="w-9 h-10 flex items-center justify-center text-[#124b60] hover:scale-110 transition-transform"
+            class="w-10 sm:w-11 h-11 sm:h-12 flex items-center justify-center hover:scale-110 transition-transform overflow-hidden"
           >
-            <svg class="w-6 h-6 stroke-[#124b60]" fill="none" viewBox="0 0 24 24" stroke-width="1.8">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M6 3.5h11a1 1 0 011 1v8a1 1 0 01-1 1H8a2 2 0 00-2 2v6l3-1 3 1 3-1 3 1 3-1V12.5" />
-              <path stroke-linecap="round" stroke-linejoin="round" d="M9 8l2-1.8 2 1.5 2.5-2.2m-1.2 0h1.2v1.2" />
-              <path stroke-linecap="round" d="M9 10.5h4" />
-              <path stroke-linecap="round" d="M9 16.5h2m-2 2h2" />
-              <text x="14" y="18.5" font-size="4" font-weight="bold" fill="#124b60" stroke="none">$</text>
-            </svg>
+            <img src="assets/icons/icon-historial.png" alt="Historial de gastos" class="w-8 h-8 sm:w-9 sm:h-9 scale-110 object-contain" />
           </button>
 
-          <!-- 5. Icono Reportes (Carpeta abierta con hojas y lupa) -->
+          <!-- 5. Icono Reportes (Ajustado para igualar proporciones) -->
           <button 
             (click)="setView('reports')" 
             title="Reportes"
-            class="w-9 h-10 flex items-center justify-center text-[#124b60] hover:scale-110 transition-transform"
+            class="w-10 sm:w-11 h-11 sm:h-12 flex items-center justify-center hover:scale-110 transition-transform overflow-hidden"
           >
-            <svg class="w-6 h-6 stroke-[#124b60]" fill="none" viewBox="0 0 24 24" stroke-width="1.8">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M6 5.5h10v6H6z" />
-              <path stroke-linecap="round" d="M8 8h6m-6 2h4" />
-              <path stroke-linecap="round" stroke-linejoin="round" d="M3 7.5v12a1 1 0 001 1h14a1 1 0 001-1v-10a1 1 0 00-1-1h-6l-2-2H4a1 1 0 00-1 1z" class="fill-[#f2a625]/20" />
-              <circle cx="15.5" cy="15.5" r="3" class="fill-[#f2a625] stroke-[#124b60]" />
-              <path stroke-linecap="round" d="M17.8 17.8L21 21" />
-            </svg>
+            <img src="assets/icons/icon-reportes.png" alt="Reportes" class="w-6 h-6 sm:w-6.5 sm:h-6.5 object-contain" />
           </button>
 
-          <!-- 6. Icono Configuración (Círculo grueso con cruz gruesa +) -->
+          <!-- 6. Icono Configuración (Compensado por margen del PNG) -->
           <button 
             (click)="setView('config')" 
             title="Configuracion"
-            class="w-9 h-10 flex items-center justify-center text-[#124b60] hover:scale-110 transition-transform"
+            class="w-10 sm:w-11 h-11 sm:h-12 flex items-center justify-center hover:scale-110 transition-transform overflow-hidden"
           >
-            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none">
-              <circle cx="12" cy="12" r="9" stroke="#124b60" stroke-width="2.5" />
-              <path d="M12 7.5v9M7.5 12h9" stroke="#124b60" stroke-width="2.8" stroke-linecap="round" />
-            </svg>
+            <img src="assets/icons/icon-config.png" alt="Configuración" class="w-9 h-9 sm:w-10 sm:h-10 scale-130 object-contain" />
           </button>
 
         </div>
@@ -128,59 +97,59 @@
           <!-- 1. Menu -->
           <div 
             (click)="setView('dashboard')"
-            class="h-10 rounded-full flex items-center justify-between pl-4 pr-0 cursor-pointer transition-all shadow-md overflow-hidden bg-gradient-to-r from-[#1a8881] to-[#285e6d] hover:brightness-110"
+            class="h-11 sm:h-12 rounded-full flex items-center justify-between pl-4 pr-0 cursor-pointer transition-all shadow-md overflow-hidden bg-gradient-to-r from-[#1a8881] to-[#285e6d] hover:brightness-110"
             [ngClass]="activeView() === 'dashboard' ? 'ring-2 ring-white/50' : ''"
           >
-            <span class="text-xs sm:text-sm font-medium text-white tracking-wide">Menu</span>
+            <span class="text-xs sm:text-sm font-semibold text-white tracking-wide">Menu</span>
             <span class="w-4 h-full bg-[#f2a625] rounded-r-full shrink-0"></span>
           </div>
 
           <!-- 2. Ingresar los ingresos -->
           <div 
             (click)="setView('ingresos')"
-            class="h-10 rounded-full flex items-center justify-between pl-4 pr-0 cursor-pointer transition-all shadow-md overflow-hidden bg-gradient-to-r from-[#1a8881] to-[#285e6d] hover:brightness-110"
+            class="h-11 sm:h-12 rounded-full flex items-center justify-between pl-4 pr-0 cursor-pointer transition-all shadow-md overflow-hidden bg-gradient-to-r from-[#1a8881] to-[#285e6d] hover:brightness-110"
             [ngClass]="activeView() === 'ingresos' ? 'ring-2 ring-white/50' : ''"
           >
-            <span class="text-xs sm:text-sm font-medium text-white tracking-wide truncate pr-1">ingresar los ingresos</span>
+            <span class="text-xs sm:text-sm font-semibold text-white tracking-wide truncate pr-1">ingresar los ingresos</span>
             <span class="w-4 h-full bg-[#f2a625] rounded-r-full shrink-0"></span>
           </div>
 
           <!-- 3. Agregar gasto -->
           <div 
             (click)="openAddExpenseModal()"
-            class="h-10 rounded-full flex items-center justify-between pl-4 pr-0 cursor-pointer transition-all shadow-md overflow-hidden bg-gradient-to-r from-[#1a8881] to-[#285e6d] hover:brightness-110"
+            class="h-11 sm:h-12 rounded-full flex items-center justify-between pl-4 pr-0 cursor-pointer transition-all shadow-md overflow-hidden bg-gradient-to-r from-[#1a8881] to-[#285e6d] hover:brightness-110"
           >
-            <span class="text-xs sm:text-sm font-medium text-white tracking-wide">Agregar gasto</span>
+            <span class="text-xs sm:text-sm font-semibold text-white tracking-wide">Agregar gasto</span>
             <span class="w-4 h-full bg-[#f2a625] rounded-r-full shrink-0"></span>
           </div>
 
           <!-- 4. Historial de gastos -->
           <div 
             (click)="setView('history')"
-            class="h-10 rounded-full flex items-center justify-between pl-4 pr-0 cursor-pointer transition-all shadow-md overflow-hidden bg-gradient-to-r from-[#1a8881] to-[#285e6d] hover:brightness-110"
+            class="h-11 sm:h-12 rounded-full flex items-center justify-between pl-4 pr-0 cursor-pointer transition-all shadow-md overflow-hidden bg-gradient-to-r from-[#1a8881] to-[#285e6d] hover:brightness-110"
             [ngClass]="activeView() === 'history' ? 'ring-2 ring-white/50' : ''"
           >
-            <span class="text-xs sm:text-sm font-medium text-white tracking-wide">Historial de gastos</span>
+            <span class="text-xs sm:text-sm font-semibold text-white tracking-wide">Historial de gastos</span>
             <span class="w-4 h-full bg-[#f2a625] rounded-r-full shrink-0"></span>
           </div>
 
           <!-- 5. Reportes -->
           <div 
             (click)="setView('reports')"
-            class="h-10 rounded-full flex items-center justify-between pl-4 pr-0 cursor-pointer transition-all shadow-md overflow-hidden bg-gradient-to-r from-[#1a8881] to-[#285e6d] hover:brightness-110"
+            class="h-11 sm:h-12 rounded-full flex items-center justify-between pl-4 pr-0 cursor-pointer transition-all shadow-md overflow-hidden bg-gradient-to-r from-[#1a8881] to-[#285e6d] hover:brightness-110"
             [ngClass]="activeView() === 'reports' ? 'ring-2 ring-white/50' : ''"
           >
-            <span class="text-xs sm:text-sm font-medium text-white tracking-wide">Reportes</span>
+            <span class="text-xs sm:text-sm font-semibold text-white tracking-wide">Reportes</span>
             <span class="w-4 h-full bg-[#f2a625] rounded-r-full shrink-0"></span>
           </div>
 
           <!-- 6. Configuracion -->
           <div 
             (click)="setView('config')"
-            class="h-10 rounded-full flex items-center justify-between pl-4 pr-0 cursor-pointer transition-all shadow-md overflow-hidden bg-gradient-to-r from-[#1a8881] to-[#285e6d] hover:brightness-110"
+            class="h-11 sm:h-12 rounded-full flex items-center justify-between pl-4 pr-0 cursor-pointer transition-all shadow-md overflow-hidden bg-gradient-to-r from-[#1a8881] to-[#285e6d] hover:brightness-110"
             [ngClass]="activeView() === 'config' ? 'ring-2 ring-white/50' : ''"
           >
-            <span class="text-xs sm:text-sm font-medium text-white tracking-wide">Configuracion</span>
+            <span class="text-xs sm:text-sm font-semibold text-white tracking-wide">Configuracion</span>
             <span class="w-4 h-full bg-[#f2a625] rounded-r-full shrink-0"></span>
           </div>
 
