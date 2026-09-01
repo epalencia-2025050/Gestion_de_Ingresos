@@ -115,7 +115,7 @@ export class LoginComponent implements OnInit, AfterViewInit, OnDestroy {
     // Escuchar parámetros dinámicamente y limpiar la URL al detectar la flag
     this.route.queryParams.subscribe(params => {
       if (params['sessionExpired'] === 'true') {
-        this.sessionExpiredMessage.set('Tu sesión ha expirado. Por favor, inicia sesión de nuevo.');
+        this.sessionExpiredMessage.set('Su sesión ha expirado. inicie su sesión de nuevo.');
 
         // Remover el queryParam de la URL para evitar que persista en refrescos/recargas
         this.router.navigate([], {
