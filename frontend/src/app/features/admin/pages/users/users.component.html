@@ -1,0 +1,47 @@
+<div class="min-h-screen bg-gray-50">
+  <nav class="bg-white shadow-sm px-6 py-4 flex items-center justify-between">
+    <h1 class="text-lg font-semibold text-gray-900">Administracion de usuarios</h1>
+    <a routerLink="/dashboard" class="text-sm text-primary-600 hover:underline">Volver al dashboard</a>
+  </nav>
+
+  <main class="max-w-4xl mx-auto px-6 py-10">
+    <div class="bg-white rounded-2xl shadow-sm p-8">
+      @if (loading()) {
+        <p class="text-gray-500">Cargando usuarios...</p>
+      } @else if (errorMessage()) {
+        <div class="bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg px-3 py-2">
+          {{ errorMessage() }}
+        </div>
+      } @else {
+        <table class="w-full text-left text-sm">
+          <thead>
+            <tr class="border-b text-gray-500">
+              <th class="py-2">Nombre</th>
+              <th class="py-2">Email</th>
+              <th class="py-2">Rol</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (user of users(); track user.id) {
+              <tr class="border-b last:border-0">
+                <td class="py-2">{{ user.nombre }}</td>
+                <td class="py-2">{{ user.email }}</td>
+                <td class="py-2">
+                  <span
+                    class="px-2 py-0.5 rounded-full text-xs font-medium"
+                    [class.bg-primary-100]="user.rol === 'admin'"
+                    [class.text-primary-700]="user.rol === 'admin'"
+                    [class.bg-gray-100]="user.rol === 'user'"
+                    [class.text-gray-600]="user.rol === 'user'"
+                  >
+                    {{ user.rol }}
+                  </span>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+    </div>
+  </main>
+</div>
