@@ -2,6 +2,19 @@
 Este proyecto esta realizado para la gestion de los ingresos o gastos que puede tener 
 una persona o familia, organizando en diferentes secciones, como que tipo de banco almacena los ingresos, registro de gastos mensuales.
 
+# Tabla de contenidos
+- Tecnologías
+- Que propuesta tiene el proyecto?
+- Como piensa trabajar el proyecto
+- Arquitectura del proyecto
+- Base de datos y autenticación
+- Roles de usuarios
+- Primera parte: DashBoard normal
+- Segunda Parte: DashBoard de ingresos
+- Puntos clave de mi aplicacion
+- Cálculo de IVA e Ingresos
+- Como ejecutar el proyecto
+
 # Tecnologías
 
 ## Backend
