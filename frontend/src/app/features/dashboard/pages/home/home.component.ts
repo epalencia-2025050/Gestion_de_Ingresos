@@ -126,6 +126,31 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   ];
 
   // Fuentes de ingreso calculadas en tiempo real
+  readonly bankInfoSignal = signal<any>(this.loadBankInfo());
+
+  readonly displaySaldoTotal = computed(() => {
+    const incomes = this.finanzasService.ingresos();
+    const expenses = this.finanzasService.gastos();
+    
+    const totalCorriente = incomes
+      .filter(i => !i.descripcion.includes('[AHORRO]'))
+      .reduce((acc, curr) => acc + curr.monto, 0);
+      
+    const totalGastos = expenses.reduce((acc, curr) => acc + curr.monto, 0);
+    
+    return totalCorriente - totalGastos;
+  });
+
+  readonly displayAhorroAcumulado = computed(() => {
+    const incomes = this.finanzasService.ingresos();
+    
+    const totalAhorro = incomes
+      .filter(i => i.descripcion.includes('[AHORRO]'))
+      .reduce((acc, curr) => acc + curr.monto, 0);
+      
+    return totalAhorro;
+  });
+
   readonly fuentesIngresoBreakdown = computed(() => {
     const incomes = this.finanzasService.ingresos();
     const total = incomes.reduce((acc, curr) => acc + curr.monto, 0);
@@ -262,6 +287,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       fecha: [today, Validators.required],
       categoria: ['Salario', Validators.required],
       estado: ['completado', Validators.required],
+      tipoCuenta: ['Cuenta corriente', Validators.required],
     });
 
     this.expenseForm = this.fb.group({
@@ -360,13 +386,14 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       currency: values.currency,
     };
     localStorage.setItem('gi_banking_info', JSON.stringify(bankDataToSave));
+    this.bankInfoSignal.set(bankDataToSave);
 
     // 2. Registrar el nuevo ingreso financiero en la base de datos PostgreSQL
     const today = new Date().toISOString().split('T')[0];
     this.finanzasService
       .createIngreso({
         monto: Number(values.montoIngreso),
-        descripcion: `Salario ${values.frecuenciaPago} - ${values.nombreBanco}`,
+        descripcion: (values.tipoCuenta === 'Cuenta de ahorro' ? '[AHORRO] ' : '') + `Salario ${values.frecuenciaPago} - ${values.nombreBanco}`,
         fecha: today,
         categoria: 'Salario',
         estado: 'completado',
@@ -397,6 +424,42 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     } catch {
       return {};
     }
+  }
+
+  private getMonthlyData() {
+    const incomes = this.finanzasService.ingresos();
+    const expenses = this.finanzasService.gastos();
+    const result = [];
+    const now = new Date();
+    for (let i = 11; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const yearStr = String(d.getFullYear());
+      const monthStr = String(d.getMonth() + 1).padStart(2, '0');
+      const prefix = `${yearStr}-${monthStr}`;
+
+      const mIncomes = incomes.filter(x => (x.fecha || '').startsWith(prefix));
+      const mExpenses = expenses.filter(x => (x.fecha || '').startsWith(prefix));
+
+      const gastos = mExpenses.reduce((acc, c) => acc + Number(c.monto), 0);
+      const ahorro = mIncomes.filter(x => x.descripcion.includes('[AHORRO]')).reduce((acc, c) => acc + Number(c.monto), 0);
+      const corriente = mIncomes.filter(x => !x.descripcion.includes('[AHORRO]')).reduce((acc, c) => acc + Number(c.monto), 0);
+      
+      let valorGrafica = 25;
+      if (ahorro > 0 || gastos > 0) {
+        valorGrafica = gastos > 0 ? Math.min(80, Math.max(20, Math.round((gastos / ((ahorro + corriente) || gastos)) * 75))) : 25;
+      }
+
+      result.push({
+        mesCompleto: d.toLocaleString('es-ES', { month: 'long' }),
+        mes: d.toLocaleString('en-US', { month: 'short' }),
+        ano: d.getFullYear(),
+        gastos,
+        ahorro,
+        corriente,
+        valorGrafica
+      });
+    }
+    return result;
   }
 
   // --- Gráfica Donut (Gastos por categorías) ---
@@ -477,9 +540,9 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       this.trendChart.destroy();
     }
 
-    const trend = this.finanzasService.tendencia();
+    const trend = this.getMonthlyData();
     const labels = trend.map((t) => t.mes);
-    const data = trend.map((t) => t.valorGrafica);
+    const data = trend.map((t) => t.ahorro);
 
     this.trendChart = new Chart(ctx, {
       type: 'bar',
@@ -521,18 +584,14 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
             callbacks: {
               title: (items) => {
                 const idx = items[0]?.dataIndex ?? 0;
-                const item = this.finanzasService.tendencia()[idx];
+                const item = this.getMonthlyData()[idx];
                 return item ? `${item.mesCompleto} ${item.ano}` : items[0]?.label ?? '';
               },
               label: (context) => {
                 const idx = context.dataIndex;
-                const item = this.finanzasService.tendencia()[idx];
+                const item = this.getMonthlyData()[idx];
                 if (item) {
-                  return [
-                    `Ingresos: Q${item.ingresos.toLocaleString('en-US')}`,
-                    `Gastos: Q${item.gastos.toLocaleString('en-US')}`,
-                    `Ahorro: Q${item.ahorro.toLocaleString('en-US')}`,
-                  ];
+                  return `Ahorro: Q${item.ahorro.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
                 }
                 return `Valor: ${context.parsed.y}`;
               },
@@ -557,9 +616,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
           },
           y: {
             min: 0,
-            max: 80,
             ticks: {
-              stepSize: 20,
               color: '#8fa7ad',
               font: {
                 size: 11,
@@ -584,12 +641,12 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       return;
     }
 
-    const trend = this.finanzasService.tendencia();
+    const trend = this.getMonthlyData();
     this.trendChart.data.labels = trend.length
       ? trend.map((t) => t.mes)
       : ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
     this.trendChart.data.datasets[0].data = trend.length
-      ? trend.map((t) => t.valorGrafica)
+      ? trend.map((t) => t.ahorro)
       : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     this.trendChart.update();
   }
@@ -605,9 +662,9 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       this.evolutionChart = null;
     }
 
-    const trend = this.finanzasService.tendencia().slice(-6);
+    const trend = this.getMonthlyData().slice(-6);
     const labels = trend.length ? trend.map((t) => t.mes) : ['Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'];
-    const data = trend.length ? trend.map((t) => t.ingresos) : [0, 0, 0, 0, 0, 0];
+    const data = trend.length ? trend.map((t) => t.ahorro) : [0, 0, 0, 0, 0, 0];
     const maxVal = Math.max(...data, 0);
 
     const gradient = ctx.createLinearGradient(0, 0, 0, 140);
@@ -620,7 +677,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
         labels: labels,
         datasets: [
           {
-            label: 'Ingresos',
+            label: 'Ahorro',
             data: data,
             borderColor: '#28bed0',
             borderWidth: 2.5,
@@ -648,7 +705,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
             padding: 10,
             cornerRadius: 8,
             callbacks: {
-              label: (ctx) => ` Ingresos: Q${(ctx.parsed.y || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}`,
+              label: (ctx) => ` Ahorro: Q${(ctx.parsed.y || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}`,
             },
           },
         },
@@ -674,11 +731,12 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       this.initEvolutionChart();
       return;
     }
-    const trend = this.finanzasService.tendencia().slice(-6);
+    const trend = this.getMonthlyData().slice(-6);
     if (trend.length > 0) {
       this.evolutionChart.data.labels = trend.map((t) => t.mes);
-      const data = trend.map((t) => t.ingresos);
+      const data = trend.map((t) => t.ahorro);
       this.evolutionChart.data.datasets[0].data = data;
+      this.evolutionChart.data.datasets[0].label = 'Ahorro';
       const maxVal = Math.max(...data, 0);
       if (this.evolutionChart.options.scales?.['y']) {
         this.evolutionChart.options.scales['y'].suggestedMax = maxVal > 0 ? maxVal * 1.15 : 1000;
@@ -734,6 +792,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       fecha: new Date().toISOString().split('T')[0],
       categoria: 'Salario',
       estado: 'completado',
+      tipoCuenta: 'Cuenta corriente',
     });
     this.showIncomeModal.set(true);
     this.mobileSidebarOpen.set(false);
@@ -760,12 +819,15 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     this.editingItem.set({ type: item.transactionType, data: item });
 
     if (item.transactionType === 'ingreso') {
+      const isAhorro = item.descripcion.includes('[AHORRO]');
+      const cleanDesc = item.descripcion.replace('[AHORRO] ', '');
       this.incomeForm.patchValue({
         monto: item.monto,
-        descripcion: item.descripcion,
+        descripcion: cleanDesc,
         fecha: item.fecha.split('T')[0],
         categoria: item.categoria,
         estado: item.estado,
+        tipoCuenta: isAhorro ? 'Cuenta de ahorro' : 'Cuenta corriente',
       });
       this.showIncomeModal.set(true);
     } else {
@@ -799,7 +861,13 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     this.formSubmitting.set(true);
     this.formError.set(null);
 
-    const values = this.incomeForm.value;
+    const rawValues = this.incomeForm.value;
+    const descBase = rawValues.descripcion.replace('[AHORRO] ', '');
+    const finalDesc = rawValues.tipoCuenta === 'Cuenta de ahorro' ? `[AHORRO] ${descBase}` : descBase;
+    
+    const values = { ...rawValues, descripcion: finalDesc };
+    delete values.tipoCuenta;
+
     const isEdit = this.editingItem();
 
     if (isEdit && isEdit.type === 'ingreso') {
